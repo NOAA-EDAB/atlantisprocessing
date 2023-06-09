@@ -2,13 +2,18 @@
 #'
 #' @param param.dir string. Path to location of atlantis parameter files
 #' @param atl.dir string. Path to location of atlantis output files
+#' @param run.prefix string. Name of the run. filename prefix in the atlantis output
 #' @param include_catch logical. Whether to include catch output
 #'
 #' @return list containing parameter file name and full path to file
 #'
 #' @export
 
-get_atl_paramfiles <- function(param.dir,atl.dir,include_catch){
+get_atl_paramfiles <- function(param.dir,atl.dir,run.prefix,include_catch){
+
+  # checks to make sure formatted correctly
+  param.dir <- check_string(param.dir)
+  atl.dir <- check_string(atl.dir)
 
   #Create vector of netCDF output files
   output.files <- list.files(path = atl.dir, pattern = '*.nc')
@@ -18,18 +23,18 @@ get_atl_paramfiles <- function(param.dir,atl.dir,include_catch){
   lng.str <- nchar(nc.str)
 
   #Generate paths to main, PROD, DietCheck, YOY, and SSB output files
-  main.nc <- paste0(atl.dir,run.prefix,'.nc')
-  prod.nc <- paste0(atl.dir,run.prefix,'PROD.nc')
-  dietcheck <- paste0(atl.dir,run.prefix,'DietCheck.txt')
-  yoy <- paste0(atl.dir,run.prefix,'YOY.txt')
-  ssb <- paste0(atl.dir,run.prefix,'SSB.txt')
-  mort <- paste0(atl.dir,run.prefix,'Mort.txt')
-  specificmort <- paste0(atl.dir,run.prefix,'SpecificMort.txt')
+  main.nc <- file.path(atl.dir,paste0(run.prefix,'.nc'))
+  prod.nc <- file.path(atl.dir,paste0(run.prefix,'PROD.nc'))
+  dietcheck <- file.path(atl.dir,paste0(run.prefix,'DietCheck.txt'))
+  yoy <- file.path(atl.dir,paste0(run.prefix,'YOY.txt'))
+  ssb <- file.path(atl.dir,paste0(run.prefix,'SSB.txt'))
+  mort <- file.path(atl.dir,paste0(run.prefix,'Mort.txt'))
+  specificmort <- file.path(atl.dir,paste0(run.prefix,'SpecificMort.txt'))
 
   #If catch is turned on all generate paths for CATCH and TOTCATCH
   if(include_catch){
-    catch <- paste0(atl.dir, run.prefix,'CATCH.nc')
-    catchtot <- paste0(atl.dir, run.prefix,'TOTCATCH.nc')
+    catch <- file.path(atl.dir, paste0(run.prefix,'CATCH.nc'))
+    catchtot <- file.path(atl.dir, paste0(run.prefix,'TOTCATCH.nc'))
   }
 
   # Identify run_command file to get additional
@@ -83,5 +88,5 @@ get_atl_paramfiles <- function(param.dir,atl.dir,include_catch){
                     specificmort = specificmort
                     )
 
-  return(param.list=NULL)
+  return(param.list=param.list)
 }

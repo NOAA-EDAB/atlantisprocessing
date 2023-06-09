@@ -6,6 +6,7 @@
 #' @param run.cmd Content of run (bat) file
 #' @param code flag that denotes parameter file
 #'
+#' @export
 #' @noRd
 
 

@@ -4,12 +4,14 @@
 \alias{get_atl_paramfiles}
 \title{Creates a dataframe of atlantis parameter files based on standard outut}
 \usage{
-get_atl_paramfiles(param.dir, atl.dir, include_catch)
+get_atl_paramfiles(param.dir, atl.dir, run.prefix, include_catch)
 }
 \arguments{
 \item{param.dir}{string. Path to location of atlantis parameter files}
 
 \item{atl.dir}{string. Path to location of atlantis output files}
+
+\item{run.prefix}{string. Name of the run. filename prefix in the atlantis output}
 
 \item{include_catch}{logical. Whether to include catch output}
 }
