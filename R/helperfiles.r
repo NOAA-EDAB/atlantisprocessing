@@ -13,3 +13,10 @@
 run.filename <- function(run.cmd,code){
   return(strsplit(strsplit(run.cmd,paste0(code,' '))[[1]][2],' ')[[1]][1])
 }
+
+
+#Utility function
+bind.save = function(x,name,out.dir){
+  x2 = dplyr::bind_rows(x)
+  saveRDS(x2,paste0(out.dir,name,'.rds'))
+}
