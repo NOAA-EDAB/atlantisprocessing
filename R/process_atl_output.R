@@ -1,11 +1,11 @@
 #' Creates post-processing output for Atlantis
 #'
-#' @param.dir string. Path to location of atlantis parameter files
-#' @atl.dir string. path to location of atlantis output files
-#' @out.dir string. path to desired location of post-processed output
-#' @run.prefix string. Prefix for atlantis run output (specified in runcommand.bat)
-#' @param.s list generated from get_atl_paramfiles()
-#' @agg.scale Scale to aggregate dietcheck biomass from (either 'raw','month', or 'year' )
+#' @param param.dir string. Path to location of atlantis parameter files
+#' @param atl.dir string. path to location of atlantis output files
+#' @param out.dir string. path to desired location of post-processed output
+#' @param run.prefix string. Prefix for atlantis run output (specified in runcommand.bat)
+#' @param param.s list generated from get_atl_paramfiles()
+#' @param agg.scale Scale to aggregate dietcheck biomass from (either 'raw','month', or 'year' )
 #'
 #'
 #' @return Either saves an R object or returns a list called "result"
@@ -50,7 +50,7 @@ process_atl_output = function(param.dir,
                               ){
 
   # memory.limit(size = 56000)
-  source(here::here('R','Post_Processing','load_nc_temp.R'))
+  #source(here::here('R','Post_Processing','load_nc_temp.R'))
 
 
   if(large.file){
