@@ -7,6 +7,7 @@
 #' @param param.s list generated from get_atl_paramfiles()
 #' @param agg.scale Scale to aggregate dietcheck biomass from (either 'raw','month', or 'year' )
 #'
+#' @importFrom magrittr "%>%"
 #'
 #' @return Either saves an R object or returns a list called "result"
 #'
@@ -16,7 +17,7 @@
 
 process_atl_output = function(param.dir,
                               atl.dir,
-                              out.dir,
+                              out.dir = file.path(atl.dir,'Post_Processed/Data/'),
                               run.prefix,
                               param.ls,
                               agg.scale = 'day',
@@ -52,14 +53,16 @@ process_atl_output = function(param.dir,
   # memory.limit(size = 56000)
   #source(here::here('R','Post_Processing','load_nc_temp.R'))
 
-
+  if (!dir.exists(out.dir)) {
+    dir.create(out.dir,recursive = T)
+  }
   if(large.file){
     dir.create(paste0(atl.dir,'/Aggregated/'))
   }
 
 
   #Read in groups file
-  fgs = load_fgs(param.ls$groups.file)%>%
+  fgs = atlantistools::load_fgs(param.ls$groups.file)%>%
     dplyr::select(Code,Name,LongName)
 
   #Get boundary box
@@ -92,9 +95,10 @@ process_atl_output = function(param.dir,
   nominal.dz = as.data.frame(atlantistools::load_init(init = param.ls$init.file, vars = 'nominal_dz') )
   nominal.dz = dplyr::filter(nominal.dz,!is.na(layer))
 
-  saveRDS(vol.ts,file = paste0(out.dir,'volume.rds'))
-  saveRDS(dz,file = paste0(out.dir,'dz.rds'))
-  saveRDS(nominal.dz, file = paste0(out.dir,'nominal_dz.rds'))
+
+  saveRDS(vol.ts,file = file.path(out.dir,'volume.rds'))
+  saveRDS(dz,file = file.path(out.dir,'dz.rds'))
+  saveRDS(nominal.dz, file = file.path(out.dir,'nominal_dz.rds'))
   rm(vol.ts)
 
   if(plot.physics|plot.all|process.all){
@@ -110,23 +114,22 @@ process_atl_output = function(param.dir,
     phys.statevars = dplyr::filter(phys.statevars, !(variable == 'salt' & layer == max(layer) & time == min(time) ))
 
     #write and remove physics objects with no further use
-    saveRDS(flux,file = paste0(out.dir,'flux.rds'))
-    saveRDS(source.sink,file = paste0(out.dir,'source_sink.rds'))
-    saveRDS(phys.statevars,file = paste0(out.dir,'physics_statevars.rds'))
+    saveRDS(flux,file = file.path(out.dir,'flux.rds'))
+    saveRDS(source.sink,file = file.path(out.dir,'source_sink.rds'))
+    saveRDS(phys.statevars,file = file.path(out.dir,'physics_statevars.rds'))
     rm(flux,source.sink,phys.statevars)
     gc()
   }
 
 # Other Parameter Objects -------------------------------------------------
-
   #Read in age matrix
   data.age.mat = atlantistools::prm_to_df(prm_biol = param.ls$biol.prm, fgs = param.ls$groups.file,
                                           group = codes.age, parameter = 'age_mat')
-  saveRDS(data.age.mat,file = paste0(out.dir,'data_age_mat.rds'))
+  saveRDS(data.age.mat,file = file.path(out.dir,'data_age_mat.rds'))
 
   #Read in diet matrix
   data.diet.mat = atlantistools::load_dietmatrix(prm_biol = param.ls$biol.prm,fgs = param.ls$groups.file, convert_names = T)
-  # saveRDS(data.diet.mat,file = paste0(out.dir,'diet_matrix.rds'))
+  # saveRDS(data.diet.mat,file = file.path(out.dir,'diet_matrix.rds'))
 
   #length.age tempmat
   biol.prm.lines = read.table(param.ls$biol.prm,col.name = 1:100, comment.char = '', fill = T, header = F)
@@ -150,7 +153,7 @@ process_atl_output = function(param.dir,
                                             group = codes.age,
                                             parameter = c('KWRR','KWSR','AgeClassSize'))
   pd = atlantistools::load_init_weight(init = param.ls$init.nofill, fgs = param.ls$groups.file,bboxes = bboxes)
-  pd = dplyr::left_join(pd,recruit.weight)
+  pd = dplyr::left_join(pd,recruit.weight,by = "species")
   pd = split(pd,pd$species)
 
   #Calculate weight difference from one ageclass to the next
@@ -178,20 +181,19 @@ process_atl_output = function(param.dir,
                                                           convert_names = T)
       #Normalize proprotions so they always sum to 1
       dietcheck.tot = data.dietcheck.orig %>%
-        group_by(time,pred,agecl)%>%
-        summarise(atoutput.tot = sum(atoutput,na.rm=T))
+        dplyr::group_by(time,pred,agecl)%>%
+        dplyr::summarise(atoutput.tot = sum(atoutput,na.rm=T))
 
       data.dietcheck = data.dietcheck.orig %>%
-        left_join(dietcheck.tot)%>%
-        rename(atoutput.old = 'atoutput')%>%
-        mutate(atoutput = atoutput.old/atoutput.tot)%>%
-        select(time,pred,agecl,prey,atoutput)
+        dplyr::left_join(dietcheck.tot,by = c("time", "pred", "agecl")) %>%
+        dplyr::rename(atoutput.old = 'atoutput')%>%
+        dplyr::mutate(atoutput = atoutput.old/atoutput.tot)%>%
+        dplyr::select(time,pred,agecl,prey,atoutput)
 
 
-      saveRDS(data.dietcheck,file = paste0(out.dir,'data_dietcheck.rds'))
+      saveRDS(data.dietcheck,file = file.path(out.dir,'data_dietcheck.rds'))
     }else{
 
-      `%>%` = dplyr::`%>%`
 
       ##NEUS only 613 diet obs per timestep
       nsteps =  365/extract_prm(prm_biol = param.ls$run.prm, variables = "toutinc")
@@ -234,15 +236,15 @@ process_atl_output = function(param.dir,
                            atoutput = mean(atoutput,na.rm=T))%>%
           dplyr::ungroup()%>%
           dplyr::select(-time.agg)%>%
-          left_join(select(fgs,'Code','Name'),by = c('Predator' = 'Code'))%>%
-          select(-Predator)%>%
-          rename(Predator = 'Name')%>%
-          filter(atoutput != 0)%>%
-          left_join(select(fgs,'Code','Name'),by = c('prey' = 'Code'))%>%
-          select(-prey)%>%
-          rename(prey = 'Name',agecl = 'Cohort',pred = 'Predator')%>%
-          select(time,pred,agecl,prey,atoutput)%>%
-          arrange(time,pred,agecl,prey)
+          dplyr::left_join(select(fgs,'Code','Name'),by = c('Predator' = 'Code'))%>%
+          dplyr::select(-Predator)%>%
+          dplyr::rename(Predator = 'Name')%>%
+          dplyr::filter(atoutput != 0)%>%
+          dplyr::left_join(select(fgs,'Code','Name'),by = c('prey' = 'Code'))%>%
+          dplyr::select(-prey)%>%
+          dplyr::rename(prey = 'Name',agecl = 'Cohort',pred = 'Predator')%>%
+          dplyr::select(time,pred,agecl,prey,atoutput)%>%
+          dplyr::arrange(time,pred,agecl,prey)
 
         # test = diet.slice %>%
         #   group_by(time,pred,agecl)%>%
@@ -259,16 +261,16 @@ process_atl_output = function(param.dir,
 
 
       data.dietcheck = dplyr::bind_rows(diet.agg)%>%
-        mutate(atoutput  = as.numeric(atoutput))
+        dplyr::mutate(atoutput  = as.numeric(atoutput))
 
       pred.sum = data.dietcheck %>%
-        group_by(time,pred,agecl)%>%
-        summarise(atoutput.sum = sum(atoutput,na.rm=T))
-
+        dplyr::group_by(time,pred,agecl)%>%
+        dplyr::summarise(atoutput.sum = sum(atoutput,na.rm=T))
       data.dietcheck = data.dietcheck %>%
-        left_join(pred.sum)%>%
-        mutate(atoutput = atoutput/atoutput.sum)%>%
-        select(-atoutput.sum)
+        dplyr::left_join(pred.sum) %>%
+        dplyr::mutate(atoutput = atoutput/atoutput.sum)%>%
+        dplyr::select(-atoutput.sum)
+
 
       # data.dietcheck = atlantistools::load_dietcheck(dietcheck = paste0(atl.dir,run.prefix,'DietCheck.txt'),
       #                                                fgs = param.ls$groups.file,
@@ -276,7 +278,7 @@ process_atl_output = function(param.dir,
       #                                                convert_names = T)
 
       rm(diet.agg)
-      saveRDS(data.dietcheck,file = paste0(out.dir,'data_dietcheck.rds'))
+      saveRDS(data.dietcheck,file = file.path(out.dir,'data_dietcheck.rds'))
     }
 
     rm(data.dietcheck.orig,dietcheck.tot)
@@ -342,7 +344,7 @@ process_atl_output = function(param.dir,
           # sp.overlap = list()
           #   spatial.biomass = dplyr::bind_rows(spatial.biomass)
           #   sp.overlap = atlantistools::calculate_spatial_overlap(biomass_spatial = spatial.biomass,dietmatrix = data.diet.mat, agemat = data.age.mat )
-          #   saveRDS(sp.overlap, paste0(out.dir,'spatial_overlap.rds'))
+          #   saveRDS(sp.overlap, file.path(out.dir,'spatial_overlap.rds'))
           #   rm(sp.overlap)
         }
 
@@ -629,22 +631,22 @@ process_atl_output = function(param.dir,
                                          bboxes = bboxes))
 
       ##Recreate bio.consumed manually without full_join
-      data_eat = bind_rows(rawdata.prod[[1]], rawdata.prod[[2]])
+      data_eat = dplyr::bind_rows(rawdata.prod[[1]], rawdata.prod[[2]])
       ts_eat = sort(unique(data_eat$time))
       ts_dm = sort(unique(data.dietcheck$time))
       matching = sum(ts_eat %in% ts_dm)/length(ts_eat)
-      boxvol = agg_data(vol, groups = c('polygon','time'),out = 'vol', fun = sum)
+      boxvol = atlantistools::agg_data(vol, groups = c('polygon','time'),out = 'vol', fun = sum)
 
       pred.names = unique(data.dietcheck$pred)
       bio.consumed = list()
 
       for(i in 1:length(pred.names)){
         consumed_bio = data_eat %>%
-          filter(species == pred.names[i])%>%
-          left_join(boxvol, by = c('polygon','time')) %>%
+          dplyr::filter(species == pred.names[i])%>%
+          dplyr::left_join(boxvol, by = c('polygon','time')) %>%
           dplyr::mutate_(.dots = stats::setNames(list(~atoutput * vol), "atoutput")) %>%
           dplyr::mutate_(.dots = stats::setNames(list(~atoutput * bio.conv), "atoutput"))%>%
-          dplyr::full_join(filter(data.dietcheck,pred == pred.names[i]),by = c(species = "pred","time", "agecl"))%>%
+          dplyr::full_join(dplyr::filter(data.dietcheck,pred == pred.names[i]),by = c(species = "pred","time", "agecl"))%>%
           dplyr::filter_(~time %in% ts_eat) %>%
           dplyr::rename_(.dots = c(pred = "species"))
         bio.consumed[[i]] = consumed_bio %>%
@@ -652,13 +654,13 @@ process_atl_output = function(param.dir,
           dplyr::filter_(~!is.na(atoutput.y)) %>%
           dplyr::mutate_(.dots = stats::setNames(list(~atoutput.x * atoutput.y), "atoutput")) %>%
           dplyr::select_(.dots = names(.)[!names(.) %in% c("atoutput.x", "vol", "atoutput.y")])%>%
-          ungroup()
+          dplyr::ungroup()
 
         print(pred.names[i])
         gc()
       }
-      bio.consumed = bind_rows(bio.consumed)
-      saveRDS(bio.consumed,paste0(out.dir,'biomass_consumed.rds'))
+      bio.consumed = dplyr::bind_rows(bio.consumed)
+      saveRDS(bio.consumed,file.path(out.dir,'biomass_consumed.rds'))
       rm(bio.consumed)
       gc()
       bio.consumed = atlantistools::calculate_consumed_biomass(eat = rawdata.prod[[1]],
@@ -728,14 +730,15 @@ process_atl_output = function(param.dir,
     growth.age = dplyr::bind_rows(growth.age)
     growth.age =  atlantistools::agg_data(data = growth.age, groups = c('species','time','agecl'),fun = mean)
     #make growth.rel.init
-    growth.rel.init = dplyr::left_join(growth.age,growth.required)
+
+    growth.rel.init = dplyr::left_join(growth.age,growth.required,by = c("species", "agecl"))
     growth.rel.init = dplyr::mutate(growth.rel.init, gr_rel = (atoutput - growth_req) / growth_req)
 
     which.inf = which(growth.rel.init$gr_rel == 'Inf')
     growth.rel.init$gr_rel[which.inf] = 1
 
-    saveRDS(growth.rel.init,paste0(out.dir,'growth_rel_init.rds'))
-    saveRDS(growth.age,paste0(out.dir,'growth_age.rds'))
+    saveRDS(growth.rel.init,file.path(out.dir,'growth_rel_init.rds'))
+    saveRDS(growth.age,file.path(out.dir,'growth_age.rds'))
 
     rm(growth.age,growth.rel.init)
 
@@ -746,8 +749,8 @@ process_atl_output = function(param.dir,
 
 
     #write to file and remove
-    saveRDS(grazing,paste0(out.dir,'grazing.rds'))
-    saveRDS(eat.age,paste0(out.dir,'eat_age.rds'))
+    saveRDS(grazing,file.path(out.dir,'grazing.rds'))
+    saveRDS(eat.age,file.path(out.dir,'eat_age.rds'))
 
 
 
@@ -759,7 +762,7 @@ process_atl_output = function(param.dir,
 
   if(plot.recruits|process.all|plot.all){
     ssb.recruits = atlantistools::load_rec(yoy = param.ls$yoy, ssb = param.ls$ssb,prm_biol = param.ls$biol.prm )
-    saveRDS(ssb.recruits,paste0(out.dir,'ssb_recruits.rds'))
+    saveRDS(ssb.recruits,file.path(out.dir,'ssb_recruits.rds'))
     rm(ssb.recruits)
   }
 
@@ -778,9 +781,9 @@ process_atl_output = function(param.dir,
       dplyr::select(species,time,atoutput) %>%
       dplyr::mutate(time = time/365)
 
-    # saveRDS(catch,paste0(out.dir,'catch.rds'))
-    saveRDS(totcatch,paste0(out.dir,'totcatch.rds'))
-    saveRDS(catchmt,paste0(out.dir,'catchmt.rds'))
+    # saveRDS(catch,file.path(out.dir,'catch.rds'))
+    saveRDS(totcatch,file.path(out.dir,'totcatch.rds'))
+    saveRDS(catchmt,file.path(out.dir,'catchmt.rds'))
 
     rm(catch,totcatch,catchmt)
   }
@@ -792,9 +795,9 @@ process_atl_output = function(param.dir,
     #   dplyr::group_by(species,time) %>%
     #   dplyr::summarise(atoutput = atoutput[source == "F"]/atoutput[source == "M"],.groups="drop") %>%
     #   dplyr::mutate(atoutput = ifelse(is.infinite(atoutput),NA,atoutput))
-    saveRDS(mortality,paste0(out.dir,'mort.rds'))
+    saveRDS(mortality,file.path(out.dir,'mort.rds'))
 
     specificMortality <- atlantistools::load_spec_mort(param.ls$specificmort,prm_run=param.ls$run.prm,fgs=param.ls$groups.file,convert_names = T,removeZeros = F)
-    saveRDS(specificMortality,paste0(out.dir,'specificmort.rds'))
+    saveRDS(specificMortality,file.path(out.dir,'specificmort.rds'))
   }
 }

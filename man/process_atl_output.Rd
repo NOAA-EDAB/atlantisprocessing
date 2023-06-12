@@ -7,7 +7,7 @@
 process_atl_output(
   param.dir,
   atl.dir,
-  out.dir,
+  out.dir = file.path(atl.dir, "Post_Processed/Data/"),
   run.prefix,
   param.ls,
   agg.scale = "day",
