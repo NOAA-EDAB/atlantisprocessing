@@ -21,10 +21,9 @@ agg_custom  <-  function(data, groups, fun, agg.scale){
 
   match.cols = c(groups[-which(groups == 'time')],'time.agg')
   out.agg = out %>%
-    group_by_at(match.cols)%>%
-    summarise(time = floor(min(time)),
-              atoutput = mean(atoutput,na.rm=T))%>%
-    ungroup()%>%
+    group_by_at(match.cols) %>%
+    dplyr::summarise(time = floor(min(time)),
+              atoutput = mean(atoutput,na.rm=T),.groups="drop")
     dplyr::select(all_of(c(groups,'atoutput')))
 
   return(out.agg)
