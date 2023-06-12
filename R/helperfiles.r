@@ -18,5 +18,5 @@ run.filename <- function(run.cmd,code){
 #Utility function
 bind.save = function(x,name,out.dir){
   x2 = dplyr::bind_rows(x)
-  saveRDS(x2,paste0(out.dir,name,'.rds'))
+  saveRDS(x2,file.path(out.dir,paste0(name,'.rds')))
 }
