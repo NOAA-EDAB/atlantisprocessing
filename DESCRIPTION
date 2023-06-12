@@ -18,7 +18,8 @@ Imports:
     here,
     ncdf4,
     RNetCDF,
-    tidyr
+    tidyr,
+    magrittr
 Remotes:
    Atlantis-Ecosystem-Model/atlantistools
    r4atlantis/atlantisom
