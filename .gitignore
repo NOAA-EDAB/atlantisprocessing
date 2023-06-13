@@ -3,4 +3,8 @@
 .RData
 .Ruserdata
 
+# current r proj
 *.Rproj
+# folders
+other
+
