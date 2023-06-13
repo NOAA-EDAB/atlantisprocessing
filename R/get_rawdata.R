@@ -6,6 +6,7 @@
 
 
 get_rawdata <- function(group,group.type){
+
   if(group.type == 'age'){
     main.vars = age.vars
   }else{
@@ -14,7 +15,6 @@ get_rawdata <- function(group,group.type){
 
   if(load_fgs(param.ls$groups.file)$IsTurnedOn[which(load_fgs(param.ls$groups.file)$Name == group)] == 0){
     rawdata.spp.f = list(data.frame(species = group.types$species[i], polygon =NA, agecl = NA,layer = NA, time = 0, atoutput = NA))
-    next()
   }else{
     rawdata.spp.f =Map(load_nc_temp,
                        select_variable = main.vars,
