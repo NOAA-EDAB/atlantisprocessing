@@ -85,11 +85,6 @@ make_atlantis_diagnostic_figures = function(out.dir,
   out.dir <- check_string(out.dir)
   fig.dir <- check_string(fig.dir)
 
-  print(param.dir)
-  print(atl.dir)
-  print(out.dir)
-  print(fig.dir)
-
   #Load groups data
   group.code = atlantistools::get_age_acronyms(param.ls$groups.file)
   group.data = atlantistools::load_fgs(param.ls$groups.file)
@@ -108,6 +103,7 @@ make_atlantis_diagnostic_figures = function(out.dir,
 
   #Select box for timeseries of all benthic groups
   if(plot.benthic |plot.all){
+    print("benthic")
     biomass.spatial.stanza = readRDS(file.path(out.dir,'biomass_spatial_stanza.rds'))
     benthic.biomass.spatial = dplyr::filter(biomass.spatial.stanza, layer == benthic.level & polygon == benthic.box)
     benthic.spp = unique(benthic.biomass.spatial$species)
@@ -128,7 +124,7 @@ make_atlantis_diagnostic_figures = function(out.dir,
   # Catch Timeseries ------------------------------------------------------
 
   if(plot.catch|plot.all) {
-
+print("Catch")
     catchmt = readRDS(file.path(out.dir,'catchmt.rds'))
 
     #Catch by species time series (metric tonnes)
@@ -164,7 +160,7 @@ make_atlantis_diagnostic_figures = function(out.dir,
   # Mortality Timeseries ------------------------------------------------------
 
   if(plot.mortality|plot.all) {
-
+print("mortality")
     # plot mortality from Mort.txt
     mort = readRDS(file.path(out.dir,'mort.rds'))
     itype <- 1
@@ -252,6 +248,7 @@ make_atlantis_diagnostic_figures = function(out.dir,
 
   #Make overall biomass plot (stacked barplot of total biomass domain-wide)
   if(plot.overall.biomass|plot.all){
+    print("biomass overall")
     biomass = readRDS(file.path(out.dir,'biomass.rds'))
 
     #combine threshold = 10
@@ -278,7 +275,7 @@ make_atlantis_diagnostic_figures = function(out.dir,
 
   #Make biomass timeseries plots
   if(plot.biomass.timeseries|plot.all){
-
+print("biomass ")
     biomass = readRDS(file.path(out.dir,'biomass.rds'))
 
     #biomass by species timeseries
@@ -338,7 +335,7 @@ make_atlantis_diagnostic_figures = function(out.dir,
 
   #Make length.age plots
   if(plot.length.age|plot.all){
-
+print("length age")
     length.age = readRDS(file.path(out.dir,'length_age.rds'))
 
     #Length at age ts by spp
@@ -382,6 +379,7 @@ make_atlantis_diagnostic_figures = function(out.dir,
 
   # Max weight by age class
   if(plot.max.weight|plot.all){
+    print("max weight")
     maxSize <- readRDS(file.path(out.dir,'max_weight.rds'))
     maxSize <- maxSize %>%
       dplyr::group_by(species,agecl) %>%
@@ -415,7 +413,7 @@ make_atlantis_diagnostic_figures = function(out.dir,
 
   #Make Biomass Box plots
   if(plot.biomass.box|plot.all){
-
+print("biomass box")
     biomass.box = readRDS(file.path(out.dir,'biomass_box.rds'))
     #Bio per box
     temp.plot.1 = atlantistools::plot_line(biomass.box)
@@ -440,7 +438,7 @@ make_atlantis_diagnostic_figures = function(out.dir,
 
   #C_Mum tuning
   if(plot.c.mum|plot.all){
-
+print("c.num")
     #Data processing
 
     #mum by age
@@ -572,6 +570,7 @@ make_atlantis_diagnostic_figures = function(out.dir,
 
   #SN/RN plots
   if(plot.sn.rn|plot.all){
+    print("sn,rn")
     SN.box = readRDS(file.path(out.dir,'SN_box.rds'))
     RN.box = readRDS(file.path(out.dir,'RN_box.rds'))
     RN.age = readRDS(file.path(out.dir,'RN_age.rds'))
@@ -639,7 +638,7 @@ make_atlantis_diagnostic_figures = function(out.dir,
 
   #Plot recruits
   if(plot.recruits|plot.all){
-
+print("recruits")
     # Recruits TS
     ssb.recruits = readRDS(file.path(out.dir,'ssb_recruits.rds'))
 
@@ -658,7 +657,7 @@ make_atlantis_diagnostic_figures = function(out.dir,
     temp.plot.3 = ggplot2::update_labels(temp.plot.3,labels = list(x = 'Time (days)',y = 'Numbers'))
     temp.plot.3 = add.title(temp.plot.3, 'Recruits per SSB')
 
-    pdf(file = paste0(fig.dir,run.name,' Recruitment SSB Timeseries.pdf'),width = 14, height = 14,onefile = T)
+    pdf(file = file.path(fig.dir,paste0(run.name,' Recruitment SSB Timeseries.pdf')),width = 14, height = 14,onefile = T)
     gridExtra::grid.arrange(temp.plot.1)
     gridExtra::grid.arrange(temp.plot.2)
     gridExtra::grid.arrange(temp.plot.3)
@@ -673,7 +672,7 @@ make_atlantis_diagnostic_figures = function(out.dir,
 
   #Plot Numbers timeseries
   if(plot.numbers.timeseries|plot.all){
-
+print("numbers")
     #Numbers TS
     numbers = readRDS(file.path(out.dir,'numbers.rds'))
 
@@ -717,7 +716,7 @@ make_atlantis_diagnostic_figures = function(out.dir,
     nums.RN.SN$totalN = nums.RN.SN$atoutput*nums.RN.SN$SN_RN
     numscale.f = dplyr::left_join(nums.RN.SN, nums.c, by = 'species')
 
-    write.csv(numscale.f, file = paste0(fig.dir,run.name,'_init_nums_scalar_for_recruits.csv'),row.names = T)
+    write.csv(numscale.f, file = file.path(fig.dir,paste0(run.name,'_init_nums_scalar_for_recruits.csv')),row.names = T)
 
     #num at age %
     num.pct = atlantistools::agg_perc(numbers.age, groups = c('time','species'))
@@ -733,7 +732,7 @@ make_atlantis_diagnostic_figures = function(out.dir,
     # temp.plot.5 = ggplot2::update_labels(temp.plot.5,list(x = 'Time (years)',y='Numbers'))
     # temp.plot.5 = add.title(temp.plot.5, 'Biomass Pool Grazers')
 
-    pdf(file=paste0(fig.dir,run.name,' Numbers Timeseries.pdf'), width = 24, height = 24, onefile = T)
+    pdf(file=file.path(fig.dir,paste0(run.name,' Numbers Timeseries.pdf')), width = 24, height = 24, onefile = T)
     gridExtra::grid.arrange(temp.plot.1)
     gridExtra::grid.arrange(temp.plot.2)
     gridExtra::grid.arrange(temp.plot.3)
@@ -750,7 +749,7 @@ make_atlantis_diagnostic_figures = function(out.dir,
 
   #plot physics variables
   if(plot.physics|plot.all){
-
+print("physics")
     #Physics snapshot
     physics.statevars = readRDS(file.path(out.dir,'physics_statevars.rds'))
 
@@ -799,7 +798,7 @@ make_atlantis_diagnostic_figures = function(out.dir,
     temp.plot.4 = add.title(temp.plot.4,'Change in Water Column Height')
     temp.plot.4 = ggplot2::update_labels(temp.plot.4, list(y = ''))
 
-    pdf(file = paste0(fig.dir,run.name, ' Physics Timeseries.pdf'),width = 60, height = 18, onefile = T)
+    pdf(file = file.path(fig.dir,paste0(run.name, ' Physics Timeseries.pdf')),width = 60, height = 18, onefile = T)
     gridExtra::grid.arrange(temp.plot.1)
     for(i in 1:length(phys.plots)){
       gridExtra::grid.arrange(phys.plots[[i]])
@@ -818,7 +817,7 @@ make_atlantis_diagnostic_figures = function(out.dir,
 
   #plot growth and consumption
   if(plot.growth.cons|plot.all){
-
+print("growth")
     #Growth at ageclass v growth init
     growth.age = readRDS(file.path(out.dir,'growth_age.rds'))
     growth.rel = atlantistools::convert_relative_initial(growth.age)
@@ -846,7 +845,7 @@ make_atlantis_diagnostic_figures = function(out.dir,
     temp.plot.4 = ggplot2::update_labels(temp.plot.4, list(x='Time (years)',y='Biomass (tonnes)',color = 'Ageclass'))
     temp.plot.4 = add.title(temp.plot.4, 'Consumption at Age')
 
-    pdf(file = paste0(fig.dir,run.name,' Growth and Consumption.pdf'),width = 24, height = 24, onefile = T)
+    pdf(file = file.path(fig.dir,paste0(run.name,' Growth and Consumption.pdf')),width = 24, height = 24, onefile = T)
     gridExtra::grid.arrange(temp.plot.1)
     gridExtra::grid.arrange(temp.plot.2)
     gridExtra::grid.arrange(temp.plot.3)
@@ -862,7 +861,7 @@ make_atlantis_diagnostic_figures = function(out.dir,
 
   #plot cohort timeseries
   if(plot.cohort|plot.all){
-
+print("cohort")
     numbers.age = readRDS(file.path(out.dir,'numbers_age.rds'))
     pdf(file = file.path(fig.dir, paste0(run.name, ' Cohort Timeseries.pdf')),width = 24, height = 18, onefile =T)
     for(i in 1:10){
@@ -883,7 +882,7 @@ make_atlantis_diagnostic_figures = function(out.dir,
 
   #Diet figures
   if(plot.diet|plot.all){
-
+print("diet")
     bio_consumed = readRDS(file.path(out.dir,'biomass_consumed.rds'))
     if(nrow(bio_consumed)>0){
 
@@ -891,19 +890,31 @@ make_atlantis_diagnostic_figures = function(out.dir,
       wrap_col = 'agecl'
       combine_thresh = 3
       species = NULL
-
-      check_df_names(data = bio_consumed, expect = c("pred", "agecl",
+print("1")
+      atlantistools::check_df_names(data = bio_consumed, expect = c("pred", "agecl",
                                                      "time", "prey", "atoutput"), optional = "polygon")
-      agg_bio <- agg_data(bio_consumed, groups = c("time", "pred",
-                                                   "agecl", "prey"), fun = sum)
-      preddata <- agg_perc(agg_bio, groups = c("time", "pred",
-                                               "agecl"))
-      preydata <- agg_perc(agg_bio, groups = c("time", "prey",
-                                               "agecl"))
-      pred_comb <- combine_groups(preddata, group_col = "prey",
-                                  groups = c("time", "pred", "agecl"), combine_thresh = combine_thresh)
-      prey_comb <- combine_groups(preydata, group_col = "pred",
-                                  groups = c("time", "prey", "agecl"), combine_thresh = combine_thresh)
+      print("2")
+
+      agg_bio <- atlantistools::agg_data(bio_consumed,
+                                         groups = c("time", "pred","agecl", "prey"),
+                                         fun = sum)
+      print("3")
+      preddata <- atlantistools::agg_perc(agg_bio,
+                                          groups = c("time", "pred","agecl"))
+      print("4")
+      preydata <- atlantistools::agg_perc(agg_bio,
+                                          groups = c("time", "prey", "agecl"))
+      print("5")
+      pred_comb <- atlantistools::combine_groups(preddata,
+                                                 group_col = "prey",
+                                                 groups = c("time", "pred", "agecl"),
+                                                 combine_thresh = combine_thresh)
+      print("6")
+      prey_comb <- atlantistools::combine_groups(preydata,
+                                                 group_col = "pred",
+                                                 groups = c("time", "prey", "agecl"),
+                                                 combine_thresh = combine_thresh)
+      print("7")
 
       if (is.null(species)) {
         species <- sort(union(union(union(preddata$pred, preddata$prey),
@@ -942,6 +953,7 @@ make_atlantis_diagnostic_figures = function(out.dir,
   }
 
   if(plot.consumption|plot.all){
+    print("consumption")
     if(file.size(param.ls$prod.nc)> 1E9){
       print('Output file size too large to generate consumption plots')
     }else{
@@ -965,7 +977,7 @@ make_atlantis_diagnostic_figures = function(out.dir,
 
   #Spatial biomass
   if(plot.spatial.biomass){
-
+print("spatial biomass")
     biomass.spatial.stanza = readRDS(paste0(out.dir,'biomass_spatial_stanza.rds'))
     volume = readRDS(file.path(out.dir,'volume.rds'))
 
@@ -996,7 +1008,7 @@ make_atlantis_diagnostic_figures = function(out.dir,
 
   #LTL plots
   if(plot.LTL|plot.all){
-
+print("LTL")
     #Read in bio data
     biom = read.table(file.path(atl.dir,paste0(run.prefix,'BiomIndx.txt')),header= T)
     phyto = read.table(phytopl.history,header =T,sep = ',')
@@ -1052,7 +1064,7 @@ make_atlantis_diagnostic_figures = function(out.dir,
 
   if(plot.spatial.biomass.seasonal){
     #source(here::here('R','plot_biomass_box_summary.R'))
-
+print("spatial biomass")
     plot_biomass_box_season(bio.box = readRDS(file.path(out.dir,'biomass_box.rds')),
                            bio.box.invert = readRDS(file.path(out.dir,'biomass_box_invert.rds')),
                            fig.dir = fig.dir,
