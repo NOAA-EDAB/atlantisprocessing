@@ -5,7 +5,6 @@
 #'
 #' @param filepath string. path to file
 #'
-#'@export
 #' @noRd
 
 # All file paths must use forward slashes and end with a / slash

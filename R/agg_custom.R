@@ -4,8 +4,8 @@
 #'
 #'
 #'
-#'
-#' @export
+#' @noRd
+
 
 agg_custom  <-  function(data, groups, fun, agg.scale){
   out = atlantistools::agg_data(data = data, groups = groups, fun = fun) %>%

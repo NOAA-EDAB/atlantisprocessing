@@ -2,7 +2,7 @@
 #'
 #'
 #'
-#' @export
+#' @noRd
 
 
 get_rawdata <- function(group,group.type){

@@ -1,7 +1,7 @@
 #'
 #'
-#'
-#' @export
+#'@noRd
+
 
 
 load_nc_temp =function (nc, fgs, bps, select_groups, select_variable, prm_run,
