@@ -34,7 +34,7 @@ plot_sp <- function(data, col, wrap_col) {
     plot <- ggplot2::ggplot() + ggplot2::theme_void()
   }
   else {
-    agg_data <- agg_data(data, groups = col, out = "sum_diet",
+    agg_data <- atlantistools::agg_data(data, groups = col, out = "sum_diet",
                          fun = sum)
     data[, col] <- factor(data[[col]], levels = agg_data[[1]][order(agg_data$sum_diet,
                                                                     decreasing = TRUE)])
