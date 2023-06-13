@@ -222,9 +222,15 @@ load_nc_temp =function (nc, fgs, bps, select_groups, select_variable, prm_run,
     result <- result[!min_pools, ]
   }
   if (select_variable == "N" & any(final_agecl == 2)) {
-    result <- result %>% dplyr::group_by_("species", "polygon",
-                                          "layer", "time") %>% dplyr::summarise_(atoutput = ~sum(atoutput)) %>%
-      dplyr::ungroup()
+    # old
+    # result <- result %>%
+    #   dplyr::group_by_("species", "polygon","layer", "time") %>%
+    #   dplyr::summarise_(atoutput = ~sum(atoutput)) %>%
+    #   dplyr::ungroup()
+    result <- result %>%
+      dplyr::group_by_("species", "polygon","layer", "time") %>%
+      dplyr::summarise(atoutput = sum(atoutput),.groups="drop")
+
   }
   if(nrow(result)== 0){
     return(NULL)

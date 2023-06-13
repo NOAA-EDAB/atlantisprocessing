@@ -134,7 +134,6 @@ process_atl_output = function(param.dir,
   #length.age tempmat
   biol.prm.lines = read.table(param.ls$biol.prm,col.name = 1:100, comment.char = '', fill = T, header = F)
   lia.match =biol.prm.lines[grep('li_a_',biol.prm.lines[,1]),1:20]
-
   tempmat = matrix(NA,nrow = nrow(lia.match), ncol = 3)
   for(igroup in 1:nrow(tempmat)){
     tempmat[igroup,1] = strsplit(as.character(lia.match[igroup,1]),'li_a_')[[1]][2]
@@ -147,6 +146,8 @@ process_atl_output = function(param.dir,
   tempmat2 = as.data.frame(tempmat[2:dim(tempmat)[1],])
   colnames(tempmat2) = c('Code','li_a','li_b')
   tempmat3 = dplyr::left_join(tempmat2, groups.data2,by = 'Code')
+
+
 
   ##Growth relative to initial conditions
   recruit.weight = atlantistools::prm_to_df(prm_biol = param.ls$biol.prm, fgs = param.ls$groups.file,
