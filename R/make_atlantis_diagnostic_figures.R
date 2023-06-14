@@ -971,20 +971,23 @@ print("7")
   #Spatial biomass
   if(plot.spatial.biomass){
 print("spatial biomass")
-    biomass.spatial.stanza = readRDS(file.path(out.dir,'biomass_spatial_stanza.rds'))
+    biomass.spatial.stanza <-  readRDS(file.path(out.dir,'biomass_spatial_stanza.rds'))
     volume = readRDS(file.path(out.dir,'volume.rds'))
 
-    temp.plots = atlantistools::plot_spatial_box(biomass.spatial.stanza,
-                                                 bgm_as_df = atlantistools::convert_bgm(bgm = param.ls$bgm), timesteps = 7)
+    temp.plots = atlantistools::plot_spatial_box(bio_spatial = biomass.spatial.stanza,
+                                                 bgm_as_df = atlantistools::convert_bgm(bgm = param.ls$bgm),
+                                                 timesteps = 7)
     pdf(file = file.path(fig.dir, paste0(run.name, ' Spatial Biomass Box Distribution.pdf')),width = 24, height =18 )
     for( i in seq_along(temp.plots)){
       gridExtra::grid.arrange(temp.plots[[i]])
     }
     dev.off()
 
-    biomass.spatial.stanza= dplyr::filter(biomass.spatial.stanza,!is.na(layer))
-    temp.plots.2 = atlantistools::plot_spatial_ts(biomass.spatial.stanza,
-                                                  bgm_as_df = atlantistools::convert_bgm(bgm = param.ls$bgm), vol = volume )
+    print("next")
+    biomass.spatial.stanza <-  dplyr::filter(biomass.spatial.stanza,!is.na(layer))
+    temp.plots.2 = atlantistools::plot_spatial_ts(bio_spatial = biomass.spatial.stanza,
+                                                  bgm_as_df = atlantistools::convert_bgm(bgm = param.ls$bgm),
+                                                  vol = volume )
     pdf(file = file.path(fig.dir, paste0(run.name, ' Spatial Biomass Distribution Timeseries.pdf')),width =24, height =18 )
     for(i in seq_along(temp.plots.2)){
       gridExtra::grid.arrange(temp.plots.2[[i]])
