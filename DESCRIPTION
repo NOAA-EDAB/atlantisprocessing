@@ -26,5 +26,5 @@ Imports:
     tidyr,
     magrittr
 Remotes:
-   Atlantis-Ecosystem-Model/atlantistools
+   Atlantis-Ecosystem-Model/atlantistools,
    r4atlantis/atlantisom
