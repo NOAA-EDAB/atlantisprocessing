@@ -12,6 +12,8 @@ check_string <- function(filepath){
 
   # global sub. if double \\ (windows)
   filepath <- gsub("\\\\","/",filepath)
+  # global sub. if multiple /
+  filepath <- gsub("//+","/",filepath)
   # trailing /
   n <- nchar(filepath)
   if (substr(filepath,n,n) == "/") {
