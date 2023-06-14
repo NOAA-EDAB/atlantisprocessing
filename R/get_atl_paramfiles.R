@@ -38,8 +38,8 @@ get_atl_paramfiles <- function(param.dir,atl.dir,run.prefix,include_catch){
   }
 
   # Identify run_command file to get additional
-  linenum <- grep("atlantisMerged",readLines(file.path(atl.dir,"log.txt")))
-  linesuptocommand <- readLines(file.path(atl.dir,"log.txt"), n = linenum)
+  linenum <- grep("atlantisMerged",readLines(file.path(atl.dir,"log.txt"),warn=F))
+  linesuptocommand <- readLines(file.path(atl.dir,"log.txt"), n = linenum,warn=F)
   run.cmd <- linesuptocommand[linenum]
 
   # pull out name of input parameter files
