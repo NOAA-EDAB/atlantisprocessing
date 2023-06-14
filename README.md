@@ -1,5 +1,9 @@
 # atlantisprocessing
 
+
+[![gitleaks](https://github.com/NOAA-EDAB/atlantisprocessing/actions/workflows/secretScan.yml/badge.svg)](https://github.com/NOAA-EDAB/atlantisprocessing/actions/workflows/secretScan.yml)
+
+
 In Development
 
 
