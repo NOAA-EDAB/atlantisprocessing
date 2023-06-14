@@ -42,10 +42,11 @@ plot_sp <- function(data, col, wrap_col) {
                                                 y = ~atoutput, fill = lazyeval::interp(~var,
                                                                                        var = as.name(col)))) +
       ggplot2::geom_bar(stat = "identity") +
-      ggplot2::scale_fill_manual(values = c(get_colpal(),RColorBrewer::brewer.pal(8,'Set1'))) +
+      ggplot2::scale_fill_manual(values = c(atlantistools::get_colpal(),RColorBrewer::brewer.pal(8,'Set1'))) +
       ggplot2::facet_wrap(lazyeval::interp(~var, var = as.name(wrap_col)),
                           ncol = 5, labeller = "label_both") + ggplot2::labs(x = NULL,
-                                                                             y = NULL, title = NULL) + theme_atlantis() +
+                                                                             y = NULL, title = NULL) +
+      atlantistools::theme_atlantis() +
       ggplot2::theme(legend.position = "right")
     plot <- atlantistools:::ggplot_custom(plot)
   }

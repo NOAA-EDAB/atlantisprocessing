@@ -22,7 +22,7 @@ get_consumption <- function(prod.file,fgs.file){
     }
     group.df.ls = list()
     for(v in 1:length(group.eat)){
-      age.var = colSums(ncvar_get(prod.nc,group.eat[v]))
+      age.var = colSums(ncdf4::ncvar_get(prod.nc,group.eat[v]))
       if(grepl('_Eat',group.eat[v])){
         group.cohort = as.numeric(strsplit(group.eat[v],paste0(groups$Name[i],'|_Eat'))[[1]][2])-1
         group.df.ls[[v]] =data.frame(Predator = groups$Code[i],
@@ -122,7 +122,7 @@ plot_overall_predation  <- function(data,bioindex.file,catch.file,min.fract = 0.
 
   plot.spp = sort(unique(as.character(data.new$Prey)))
 
-  filename = paste0(fig.dir,file.prefix,'_TotalConsumption.pdf')
+  filename = file.path(fig.dir,paste0(file.prefix,'_TotalConsumption.pdf'))
   pdf(file = filename,width = 16, height = 8, onefile = T)
 
   for(i in 1:length(plot.spp)){
@@ -139,10 +139,11 @@ plot_overall_predation  <- function(data,bioindex.file,catch.file,min.fract = 0.
 
     #Remove zero consumption spp
     data.spp = data.spp %>%
-      filter(!(Predator %in% which.zero))
+      dplyr::filter(!(Predator %in% which.zero))
 
     #Total consumption
-    data.tot.spp = data.tot %>% filter(Prey == plot.spp[i])
+    data.tot.spp = data.tot %>%
+      dplyr::filter(Prey == plot.spp[i])
 
     #Biomass Timeseries
     biomass.spp = biomass.data[,c(1,grep(paste0('\\b',plot.spp[i],'\\b'),biomass.colnames))]
