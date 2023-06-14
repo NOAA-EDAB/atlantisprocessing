@@ -38,10 +38,9 @@ get_atl_paramfiles <- function(param.dir,atl.dir,run.prefix,include_catch){
   }
 
   # Identify run_command file to get additional
-  run.bat <- list.files(param.dir,'*.bat')
-  run.con <- file(description=file.path(param.dir,run.bat),open='r')
-  run.cmd <- readLines(con=run.con,n = 1,warn = F)
-  close(run.con)
+  linenum <- grep("atlantisMerged",readLines(file.path(atl.dir,"log.txt")))
+  linesuptocommand <- readLines(file.path(atl.dir,"log.txt"), n = linenum)
+  run.cmd <- linesuptocommand[linenum]
 
   # pull out name of input parameter files
   run.prm <- file.path(param.dir,run.filename(run.cmd, '-r'))

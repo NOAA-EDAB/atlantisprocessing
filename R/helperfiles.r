@@ -9,8 +9,12 @@
 #' @noRd
 
 
-run.filename <- function(run.cmd,code){
-  return(strsplit(strsplit(run.cmd,paste0(code,' '))[[1]][2],' ')[[1]][1])
+run.filename <- function(command,code){
+  # split by whitespace and unlist
+  splitstring <- unlist(strsplit(command,"\\s+"))
+  # string is proceeding location from code flag
+  filenm <- splitstring[which(splitstring == code) + 1]
+  return(filenm)
 }
 
 
