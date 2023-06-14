@@ -40,7 +40,8 @@ plot_sp <- function(data, col, wrap_col) {
                                                                     decreasing = TRUE)])
     plot <- ggplot2::ggplot(data, ggplot2::aes_(x = ~time,
                                                 y = ~atoutput, fill = lazyeval::interp(~var,
-                                                                                       var = as.name(col)))) + ggplot2::geom_bar(stat = "identity") +
+                                                                                       var = as.name(col)))) +
+      ggplot2::geom_bar(stat = "identity") +
       ggplot2::scale_fill_manual(values = c(get_colpal(),RColorBrewer::brewer.pal(8,'Set1'))) +
       ggplot2::facet_wrap(lazyeval::interp(~var, var = as.name(wrap_col)),
                           ncol = 5, labeller = "label_both") + ggplot2::labs(x = NULL,
