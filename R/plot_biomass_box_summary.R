@@ -5,7 +5,7 @@
 #'
 
 # Box Gradient ------------------------------------------------------------
-
+# This needs to be reworked
 plot_biomass_box_season = function(bio.box,
                                    bio.box.invert,
                                    plot.presence=F,

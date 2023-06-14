@@ -14,9 +14,6 @@
 #'@param benthic.box numeric. Box ID for benthic plots
 #'@param benthic.level numeric. Level for benthic plots (default is 4 for NEUS model)
 #'
-#'@param phytopl.history string. Full file name for phytoplankton historical data. Columns: (Time, PL.ts, PS.ts, DF.ts), Biomass is domain-wide in tonnes
-#'@param zoopl.history string. Full file name for zooplankton historical data. Columsn: (Time, ZL, ZM, ZS, ZG). Biomass is domain-wide in tonnes
-#'
 #'@param plot.benthic logical. Benthic plots show timeseries of all benthic and epibenthic groups for one box
 #'@param plot.overall.biomass logical. Plots showing the total biomass across all functional groups as stacked barplots
 #'@param plot.biomass.timeseries logical. Plots showing biomass-related timeseries on various aggregations  and reference points
@@ -32,7 +29,6 @@
 #'@param plot.diet logical. Plots showing predation of and consumption by each functional group
 #'@param plot.spatial.biomass logical. Plots showing the spatial (box/level) structure of groups' biomass
 #'@param plot.spatial.biomass.seasonal logical. Plots showing the spatial (box/level) structure of groups' biomass
-#'@param plot.LTL logical. Plots comparing LTL groups (domain-wide) to data
 #'@param plot.catch logical. Plots annual catch(mt) age based catch (numbers) and age based %ages
 #'@param plot.max.weight logical. Plots the maximum size of fish in each size class over the domain
 #'@param plot.mortality logical. Plots Mortality (F, M1, M2) from two output sources (Mort, SpecificMort)
@@ -54,8 +50,6 @@ make_atlantis_diagnostic_figures = function(out.dir,
                                             param.ls,
                                             benthic.box,
                                             benthic.level= 4,
-                                            phytopl.history,
-                                            zoopl.history,
                                             plot.all,
                                             plot.benthic,
                                             plot.overall.biomass,
@@ -73,7 +67,6 @@ make_atlantis_diagnostic_figures = function(out.dir,
                                             plot.consumption,
                                             plot.spatial.biomass,
                                             plot.spatial.biomass.seasonal,
-                                            plot.LTL,
                                             plot.catch,
                                             plot.max.weight,
                                             plot.mortality){
@@ -893,28 +886,28 @@ print("diet")
 print("1")
       atlantistools::check_df_names(data = bio_consumed, expect = c("pred", "agecl",
                                                      "time", "prey", "atoutput"), optional = "polygon")
-      print("2")
+print("2")
 
       agg_bio <- atlantistools::agg_data(bio_consumed,
                                          groups = c("time", "pred","agecl", "prey"),
                                          fun = sum)
-      print("3")
+print("3")
       preddata <- atlantistools::agg_perc(agg_bio,
                                           groups = c("time", "pred","agecl"))
-      print("4")
+print("4")
       preydata <- atlantistools::agg_perc(agg_bio,
                                           groups = c("time", "prey", "agecl"))
-      print("5")
+print("5")
       pred_comb <- atlantistools::combine_groups(preddata,
                                                  group_col = "prey",
                                                  groups = c("time", "pred", "agecl"),
                                                  combine_thresh = combine_thresh)
-      print("6")
+print("6")
       prey_comb <- atlantistools::combine_groups(preydata,
                                                  group_col = "pred",
                                                  groups = c("time", "prey", "agecl"),
                                                  combine_thresh = combine_thresh)
-      print("7")
+print("7")
 
       if (is.null(species)) {
         species <- sort(union(union(union(preddata$pred, preddata$prey),
@@ -964,8 +957,8 @@ print("1")
                              consumption = consumption,
                              spp.names  = group.index$Code)
       plot_overall_predation(data = data.sub,
-                             bioindex.file = paste0(atl.dir,'neus_outputBiomIndx.txt'),
-                             catch.file = paste0(atl.dir,'neus_outputCatch.txt'),
+                             bioindex.file = file.path(atl.dir,'neus_outputBiomIndx.txt'),
+                             catch.file = file.path(atl.dir,'neus_outputCatch.txt'),
                              min.fract = 0.1,
                              fig.dir = fig.dir,
                              file.prefix = run.name)
@@ -978,7 +971,7 @@ print("1")
   #Spatial biomass
   if(plot.spatial.biomass){
 print("spatial biomass")
-    biomass.spatial.stanza = readRDS(paste0(out.dir,'biomass_spatial_stanza.rds'))
+    biomass.spatial.stanza = readRDS(file.path(out.dir,'biomass_spatial_stanza.rds'))
     volume = readRDS(file.path(out.dir,'volume.rds'))
 
     temp.plots = atlantistools::plot_spatial_box(biomass.spatial.stanza,
@@ -1003,66 +996,8 @@ print("spatial biomass")
   }
 
 
-  # LTL plots ---------------------------------------------------------------
-
-
-  #LTL plots
-  if(plot.LTL|plot.all){
-print("LTL")
-    #Read in bio data
-    biom = read.table(file.path(atl.dir,paste0(run.prefix,'BiomIndx.txt')),header= T)
-    phyto = read.table(phytopl.history,header =T,sep = ',')
-    zoo = read.table(zoopl.history,header = T, sep = ',')
-
-    pdf(file = file.path(fig.dir,paste0(run.name,' LTL Timeseries.pdf')),width = 12, height = 12, onefile =T)
-
-    #Picophytoplankton
-    plot(PS~Time,biom,type='l',ylim = c(0,max(c(biom$PS,phyto$PS.ts))))
-    lines(PS.ts~days,phyto,col='red')
-    legend('topleft',legend = c(run.name,'Data'),lty = c(1,1), col = c('black','red'),bty='n')
-    mtext(text = 'PS',3)
-
-    #Diatom
-    plot(PL~Time,biom, type='l',ylim = c(0,max(c(biom$PL,phyto$PL.ts))))
-    lines(PL.ts~days,phyto,col='red')
-    legend('topleft',legend = c(run.name,'Data'),lty = c(1,1), col = c('black','red'),bty = )
-    mtext('PL',3)
-
-    #Dinoflag
-    plot(DF~Time,biom,type='l',ylim = c(0,max(c(biom$DF,phyto$DF.ts))))
-    lines(DF.ts~days,phyto,col='red')
-    legend('topleft',legend = c(run.name,'Data'),lty = c(1,1), col = c('black','red'),bty = )
-    mtext('DF',3)
-
-    #Large Zooplankton
-    plot(ZL~Time,biom,type='l',ylim = c(0,max(c(biom$ZL,zoo$ZL))))
-    lines(ZL~Time,zoo,col = 'red')
-    legend('bottomright',legend = c(run.name,'Data'),lty = c(1,1), col = c('black','red'),bty = )
-    mtext('ZL',3)
-
-    #Medium Zooplankton
-    plot(ZM~Time,biom,type='l',ylim = c(0,max(c(biom$ZM,zoo$ZM))))
-    lines(ZM~Time,zoo,col='red')
-    legend('topleft',legend = c(run.name,'Data'),lty = c(1,1), col = c('black','red'),bty = )
-    mtext('ZM',3)
-
-    #Small Zooplankton
-    plot(ZS~Time,biom,type='l',ylim = c(0,max(c(biom$ZS,zoo$ZS))))
-    lines(ZS~Time,zoo,col='red')
-    legend('topleft',legend = c(run.name,'Data'),lty = c(1,1), col = c('black','red'),bty = )
-    mtext('ZS',3)
-
-    #Gelatenous Zooplankton
-    plot(ZG~Time,biom,type='l',ylim=c(0,max(c(biom$ZG,zoo$ZG))))
-    lines(ZG~Time,zoo,col = 'red')
-    legend('topleft',legend = c(run.name,'Data'),lty = c(1,1), col = c('black','red'),bty = )
-    mtext('ZG',3)
-
-    dev.off()
-
-  }
-
-  if(plot.spatial.biomass.seasonal){
+  # This needs to be reworked
+  if(F & plot.spatial.biomass.seasonal){
     #source(here::here('R','plot_biomass_box_summary.R'))
 print("spatial biomass")
     plot_biomass_box_season(bio.box = readRDS(file.path(out.dir,'biomass_box.rds')),

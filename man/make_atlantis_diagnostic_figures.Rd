@@ -14,8 +14,6 @@ make_atlantis_diagnostic_figures(
   param.ls,
   benthic.box,
   benthic.level = 4,
-  phytopl.history,
-  zoopl.history,
   plot.all,
   plot.benthic,
   plot.overall.biomass,
@@ -33,7 +31,6 @@ make_atlantis_diagnostic_figures(
   plot.consumption,
   plot.spatial.biomass,
   plot.spatial.biomass.seasonal,
-  plot.LTL,
   plot.catch,
   plot.max.weight,
   plot.mortality
@@ -55,10 +52,6 @@ make_atlantis_diagnostic_figures(
 \item{benthic.box}{numeric. Box ID for benthic plots}
 
 \item{benthic.level}{numeric. Level for benthic plots (default is 4 for NEUS model)}
-
-\item{phytopl.history}{string. Full file name for phytoplankton historical data. Columns: (Time, PL.ts, PS.ts, DF.ts), Biomass is domain-wide in tonnes}
-
-\item{zoopl.history}{string. Full file name for zooplankton historical data. Columsn: (Time, ZL, ZM, ZS, ZG). Biomass is domain-wide in tonnes}
 
 \item{plot.benthic}{logical. Benthic plots show timeseries of all benthic and epibenthic groups for one box}
 
@@ -89,8 +82,6 @@ make_atlantis_diagnostic_figures(
 \item{plot.spatial.biomass}{logical. Plots showing the spatial (box/level) structure of groups' biomass}
 
 \item{plot.spatial.biomass.seasonal}{logical. Plots showing the spatial (box/level) structure of groups' biomass}
-
-\item{plot.LTL}{logical. Plots comparing LTL groups (domain-wide) to data}
 
 \item{plot.catch}{logical. Plots annual catch(mt) age based catch (numbers) and age based \%ages}
 
