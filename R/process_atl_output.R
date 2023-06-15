@@ -4,8 +4,14 @@
 #' @param atl.dir string. path to location of atlantis output files
 #' @param out.dir string. path to desired location of post-processed output
 #' @param run.prefix string. Prefix for atlantis run output (specified in runcommand.bat)
-#' @param param.s list generated from get_atl_paramfiles()
+#' @param param.ls list generated from get_atl_paramfiles()
 #' @param agg.scale Scale to aggregate dietcheck biomass from (either 'raw','month', or 'year' )
+#' @param large.file Boolean.
+#' @param system String. "Windows" or "Linux"
+#' @param process.all Boolean. Global option to process all components
+#' @param plot.spatial.overlap Boolean
+#'
+#' @inheritParams make_atlantis_diagnostic_figures
 #'
 #' @importFrom magrittr "%>%"
 #'
@@ -21,7 +27,6 @@ process_atl_output = function(param.dir,
                               run.prefix,
                               param.ls,
                               agg.scale = 'day',
-                              save.out,
                               large.file = F,
                               system,
                               process.all = F,
@@ -42,7 +47,6 @@ process_atl_output = function(param.dir,
                               plot.consumption= F,
                               plot.spatial.biomass=F,
                               plot.spatial.biomass.seasonal = F,
-                              plot.LTL=F,
                               plot.catch =F,
                               plot.mortality=F,
                               plot.max.weight = F,

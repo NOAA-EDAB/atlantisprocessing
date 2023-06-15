@@ -1,4 +1,4 @@
-#' Creates a dataframe of atlantis parameter files based on standard outut
+#' Creates a dataframe of atlantis parameter files based on standard output
 #'
 #' @param param.dir string. Path to location of atlantis parameter files
 #' @param atl.dir string. Path to location of atlantis output files

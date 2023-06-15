@@ -1,7 +1,7 @@
 #' Creates standard diagnostic figures for Atlantis output
 #'
-#'Uses the "result" object output from process_atl_output() to create the full set of diagnostic and summary
-#'figures and tables from atlantis model run.
+#'Used after the post processing routine \code{\link{process_atl_output}}.
+#'Creates the full set of diagnostic and summary figures and tables from atlantis model run.
 #'
 #'@param out.dir string. Path where desired output data should be saved
 #'@param fig.dir string. Path where desired output figures should be saved
