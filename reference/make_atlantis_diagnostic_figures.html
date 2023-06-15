@@ -82,7 +82,11 @@ figures and tables from atlantis model run.</p>
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>out.dir</dt>
-<dd><p>string. Path where desired output tables and figures should be saved</p></dd>
+<dd><p>string. Path where desired output data should be saved</p></dd>
+
+
+<dt>fig.dir</dt>
+<dd><p>string. Path where desired output figures should be saved</p></dd>
 
 
 <dt>atl.dir</dt>
@@ -111,6 +115,10 @@ figures and tables from atlantis model run.</p>
 
 <dt>benthic.level</dt>
 <dd><p>numeric. Level for benthic plots (default is 4 for NEUS model)</p></dd>
+
+
+<dt>plot.all</dt>
+<dd><p>Boolean. Global flag for plotting everything</p></dd>
 
 
 <dt>plot.benthic</dt>
@@ -165,6 +173,10 @@ figures and tables from atlantis model run.</p>
 <dd><p>logical. Plots showing predation of and consumption by each functional group</p></dd>
 
 
+<dt>plot.consumption</dt>
+<dd><p>Boolean. Plots showing consumption</p></dd>
+
+
 <dt>plot.spatial.biomass</dt>
 <dd><p>logical. Plots showing the spatial (box/level) structure of groups' biomass</p></dd>
 
@@ -183,10 +195,6 @@ figures and tables from atlantis model run.</p>
 
 <dt>plot.mortality</dt>
 <dd><p>logical. Plots Mortality (F, M1, M2) from two output sources (Mort, SpecificMort)</p></dd>
-
-
-<dt>result</dt>
-<dd><p>list. Output produced by process_atl_output(). Default name is 'result'. Should be loaded in first</p></dd>
 
 </dl></div>
     <div id="value">
