@@ -2,7 +2,7 @@
 #'
 #'
 #'
-#'
+#'@noRd
 
 # Box Gradient ------------------------------------------------------------
 # This needs to be reworked
@@ -119,7 +119,7 @@ plot_biomass_box_season = function(bio.box,
 #'
 #'
 #'
-#'
+#' @noRd
 # Box Time Range ------------------------------------------------------------
 
 plot_biomass_box_range = function(bio.box,
