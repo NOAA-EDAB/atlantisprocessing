@@ -1,10 +1,17 @@
 Package: atlantisprocessing
-Title: What the Package Does (One Line, Title Case)
+Title: Process and plot Atlantis output
 Version: 0.0.0.9000
 Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
+    c(person("Joseph", "Caracappa", role = c("aut"),
+          email= "joseph.caracappa@noaa.gov", 
+          comment = c(ORCID = "YOUR-ORCID-ID")),
+      person(given = "Andy",family = "Beet", role = c("aut", "cre"),
+           email = "andrew.beet@noaa.gov",
+           comment = c(ORCID = "0000-0001-8270-7090")),
+      person(given = "Ryan",family = "Morse", role = c("aut"),
+           email = "ryan.morse@noaa.gov",
+           comment = c(ORCID = "YOUR-ORCID-ID")))
+Description: Reads in Atlantis output files (nc, txt) and processes content to create RDS files used for plotting to aid in calibrating.
 License: file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
@@ -25,7 +32,8 @@ Imports:
     RNetCDF,
     tidyr,
     magrittr,
-    reshape2
+    reshape2,
+    gtable
 Remotes:
    Atlantis-Ecosystem-Model/atlantistools,
    r4atlantis/atlantisom
