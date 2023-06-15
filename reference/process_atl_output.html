@@ -51,7 +51,6 @@
 <span>  <span class="va">run.prefix</span>,</span>
 <span>  <span class="va">param.ls</span>,</span>
 <span>  agg.scale <span class="op">=</span> <span class="st">"day"</span>,</span>
-<span>  <span class="va">save.out</span>,</span>
 <span>  large.file <span class="op">=</span> <span class="cn">F</span>,</span>
 <span>  <span class="va">system</span>,</span>
 <span>  process.all <span class="op">=</span> <span class="cn">F</span>,</span>
@@ -72,7 +71,6 @@
 <span>  plot.consumption <span class="op">=</span> <span class="cn">F</span>,</span>
 <span>  plot.spatial.biomass <span class="op">=</span> <span class="cn">F</span>,</span>
 <span>  plot.spatial.biomass.seasonal <span class="op">=</span> <span class="cn">F</span>,</span>
-<span>  plot.LTL <span class="op">=</span> <span class="cn">F</span>,</span>
 <span>  plot.catch <span class="op">=</span> <span class="cn">F</span>,</span>
 <span>  plot.mortality <span class="op">=</span> <span class="cn">F</span>,</span>
 <span>  plot.max.weight <span class="op">=</span> <span class="cn">F</span>,</span>
@@ -98,12 +96,108 @@
 <dd><p>string. Prefix for atlantis run output (specified in runcommand.bat)</p></dd>
 
 
+<dt>param.ls</dt>
+<dd><p>list generated from get_atl_paramfiles()</p></dd>
+
+
 <dt>agg.scale</dt>
 <dd><p>Scale to aggregate dietcheck biomass from (either 'raw','month', or 'year' )</p></dd>
 
 
-<dt>param.s</dt>
-<dd><p>list generated from get_atl_paramfiles()</p></dd>
+<dt>large.file</dt>
+<dd><p>Boolean.</p></dd>
+
+
+<dt>system</dt>
+<dd><p>String. "Windows" or "Linux"</p></dd>
+
+
+<dt>process.all</dt>
+<dd><p>Boolean. Global option to process all components</p></dd>
+
+
+<dt>plot.all</dt>
+<dd><p>Boolean. Global flag for plotting everything</p></dd>
+
+
+<dt>plot.benthic</dt>
+<dd><p>logical. Benthic plots show timeseries of all benthic and epibenthic groups for one box</p></dd>
+
+
+<dt>plot.overall.biomass</dt>
+<dd><p>logical. Plots showing the total biomass across all functional groups as stacked barplots</p></dd>
+
+
+<dt>plot.biomass.timeseries</dt>
+<dd><p>logical. Plots showing biomass-related timeseries on various aggregations  and reference points</p></dd>
+
+
+<dt>plot.length.age</dt>
+<dd><p>logical. Plots relating to the length-age relationship of age-structured groups</p></dd>
+
+
+<dt>plot.biomass.box</dt>
+<dd><p>logical. Plots relating to biomass but grouped by box</p></dd>
+
+
+<dt>plot.c.mum</dt>
+<dd><p>logical. Plots and tables related to tuning C and mum parameters</p></dd>
+
+
+<dt>plot.sn.rn</dt>
+<dd><p>logical. Plots relating to SN and RN timeseries</p></dd>
+
+
+<dt>plot.recruits</dt>
+<dd><p>logical. Plots of recruitment and SSB timeseries</p></dd>
+
+
+<dt>plot.numbers.timeseries</dt>
+<dd><p>logical. Plots showing timeseries of numbers (as opposed to biomass)</p></dd>
+
+
+<dt>plot.physics</dt>
+<dd><p>logical. Plots of physical statevariables as well as fluxes</p></dd>
+
+
+<dt>plot.growth.cons</dt>
+<dd><p>logical. Plots relating to growth and consumption</p></dd>
+
+
+<dt>plot.cohort</dt>
+<dd><p>logical. Plots showing timeseries of each cohort across age-structured groups</p></dd>
+
+
+<dt>plot.diet</dt>
+<dd><p>logical. Plots showing predation of and consumption by each functional group</p></dd>
+
+
+<dt>plot.consumption</dt>
+<dd><p>Boolean. Plots showing consumption</p></dd>
+
+
+<dt>plot.spatial.biomass</dt>
+<dd><p>logical. Plots showing the spatial (box/level) structure of groups' biomass</p></dd>
+
+
+<dt>plot.spatial.biomass.seasonal</dt>
+<dd><p>logical. Plots showing the spatial (box/level) structure of groups' biomass</p></dd>
+
+
+<dt>plot.catch</dt>
+<dd><p>logical. Plots annual catch(mt) age based catch (numbers) and age based %ages</p></dd>
+
+
+<dt>plot.mortality</dt>
+<dd><p>logical. Plots Mortality (F, M1, M2) from two output sources (Mort, SpecificMort)</p></dd>
+
+
+<dt>plot.max.weight</dt>
+<dd><p>logical. Plots the maximum size of fish in each size class over the domain</p></dd>
+
+
+<dt>plot.spatial.overlap</dt>
+<dd><p>Boolean</p></dd>
 
 </dl></div>
     <div id="value">
@@ -124,7 +218,7 @@
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by First Last.</p>
+  <p></p><p>Developed by Joseph Caracappa, Andy Beet, Ryan Morse.</p>
 </div>
 
 <div class="pkgdown">
