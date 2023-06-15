@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_atl_paramfiles.R
 \name{get_atl_paramfiles}
 \alias{get_atl_paramfiles}
-\title{Creates a dataframe of atlantis parameter files based on standard outut}
+\title{Creates a dataframe of atlantis parameter files based on standard output}
 \usage{
 get_atl_paramfiles(param.dir, atl.dir, run.prefix, include_catch)
 }
@@ -19,5 +19,5 @@ get_atl_paramfiles(param.dir, atl.dir, run.prefix, include_catch)
 list containing parameter file name and full path to file
 }
 \description{
-Creates a dataframe of atlantis parameter files based on standard outut
+Creates a dataframe of atlantis parameter files based on standard output
 }

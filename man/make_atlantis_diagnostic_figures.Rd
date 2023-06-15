@@ -101,6 +101,6 @@ A series of figures and tables based on output grouping flags
 Author: Ryan Morse, modified by J. Caracappa
 }
 \description{
-Uses the "result" object output from process_atl_output() to create the full set of diagnostic and summary
-figures and tables from atlantis model run.
+Used after the post processing routine \code{\link{process_atl_output}}.
+Creates the full set of diagnostic and summary figures and tables from atlantis model run.
 }
