@@ -2,6 +2,7 @@
 
 
 [![gitleaks](https://github.com/NOAA-EDAB/atlantisprocessing/actions/workflows/secretScan.yml/badge.svg)](https://github.com/NOAA-EDAB/atlantisprocessing/actions/workflows/secretScan.yml)
+[![gh-pages](https://github.com/NOAA-EDAB/atlantisprocessing/actions/workflows/pkgdown.yml/badge.svg)](https://github.com/NOAA-EDAB/atlantisprocessing/actions/workflows/pkgdown.yml)
 
 
 In Development
