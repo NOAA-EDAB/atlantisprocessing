@@ -3,17 +3,18 @@
 #'Uses the "result" object output from process_atl_output() to create the full set of diagnostic and summary
 #'figures and tables from atlantis model run.
 #'
-#'@param out.dir string. Path where desired output tables and figures should be saved
+#'@param out.dir string. Path where desired output data should be saved
+#'@param fig.dir string. Path where desired output figures should be saved
 #'@param atl.dir string. Path where atlantis model output is located
 #'@param param.dir string. Path where atlantis parameter files are located
 #'@param run.prefix sring. Prefix specified in Atlantis.bat file that begins each output file
 #'@param run.name string. Prefered name to use for output file names
-#'@param result list. Output produced by process_atl_output(). Default name is 'result'. Should be loaded in first
 #'@param param.ls list. Output from get_atl_paramfiles
 #'
 #'@param benthic.box numeric. Box ID for benthic plots
 #'@param benthic.level numeric. Level for benthic plots (default is 4 for NEUS model)
 #'
+#'@param plot.all Boolean. Global flag for plotting everything
 #'@param plot.benthic logical. Benthic plots show timeseries of all benthic and epibenthic groups for one box
 #'@param plot.overall.biomass logical. Plots showing the total biomass across all functional groups as stacked barplots
 #'@param plot.biomass.timeseries logical. Plots showing biomass-related timeseries on various aggregations  and reference points
@@ -27,6 +28,7 @@
 #'@param plot.growth.cons logical. Plots relating to growth and consumption
 #'@param plot.cohort logical. Plots showing timeseries of each cohort across age-structured groups
 #'@param plot.diet logical. Plots showing predation of and consumption by each functional group
+#'@param plot.consumption Boolean. Plots showing consumption
 #'@param plot.spatial.biomass logical. Plots showing the spatial (box/level) structure of groups' biomass
 #'@param plot.spatial.biomass.seasonal logical. Plots showing the spatial (box/level) structure of groups' biomass
 #'@param plot.catch logical. Plots annual catch(mt) age based catch (numbers) and age based %ages

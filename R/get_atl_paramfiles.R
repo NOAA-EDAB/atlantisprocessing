@@ -61,7 +61,7 @@ get_atl_paramfiles <- function(param.dir,atl.dir,run.prefix,include_catch){
   bgm <-  file.path(param.dir,bgm.str)
 
   #Get nofill version of initial conditions
-  init.nofill <-  list.files(param.dir,'*nofill*',full.name = T)
+  init.nofill <-  list.files(param.dir,'*nofill*',full.names = T)
 
   #Organize parameter files
   param.list <-  list(run.cmd = run.cmd,

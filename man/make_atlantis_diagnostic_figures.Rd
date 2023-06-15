@@ -37,7 +37,9 @@ make_atlantis_diagnostic_figures(
 )
 }
 \arguments{
-\item{out.dir}{string. Path where desired output tables and figures should be saved}
+\item{out.dir}{string. Path where desired output data should be saved}
+
+\item{fig.dir}{string. Path where desired output figures should be saved}
 
 \item{atl.dir}{string. Path where atlantis model output is located}
 
@@ -52,6 +54,8 @@ make_atlantis_diagnostic_figures(
 \item{benthic.box}{numeric. Box ID for benthic plots}
 
 \item{benthic.level}{numeric. Level for benthic plots (default is 4 for NEUS model)}
+
+\item{plot.all}{Boolean. Global flag for plotting everything}
 
 \item{plot.benthic}{logical. Benthic plots show timeseries of all benthic and epibenthic groups for one box}
 
@@ -79,6 +83,8 @@ make_atlantis_diagnostic_figures(
 
 \item{plot.diet}{logical. Plots showing predation of and consumption by each functional group}
 
+\item{plot.consumption}{Boolean. Plots showing consumption}
+
 \item{plot.spatial.biomass}{logical. Plots showing the spatial (box/level) structure of groups' biomass}
 
 \item{plot.spatial.biomass.seasonal}{logical. Plots showing the spatial (box/level) structure of groups' biomass}
@@ -88,8 +94,6 @@ make_atlantis_diagnostic_figures(
 \item{plot.max.weight}{logical. Plots the maximum size of fish in each size class over the domain}
 
 \item{plot.mortality}{logical. Plots Mortality (F, M1, M2) from two output sources (Mort, SpecificMort)}
-
-\item{result}{list. Output produced by process_atl_output(). Default name is 'result'. Should be loaded in first}
 }
 \value{
 A series of figures and tables based on output grouping flags
