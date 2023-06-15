@@ -1,3 +1,7 @@
 ^atlantisprocessing\.Rproj$
 ^\.Rproj\.user$
 ^data-raw$
+.github
+^\.github$
+docs
+other
