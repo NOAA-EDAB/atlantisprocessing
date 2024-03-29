@@ -49,7 +49,7 @@ process_atl_output = function(param.dir,
                               plot.spatial.biomass.seasonal = F,
                               plot.catch =F,
                               plot.mortality=F,
-                              plot.max.weight = F,
+                              plot.weight = F,
                               plot.spatial.overlap =F
 
                               ){
@@ -300,7 +300,7 @@ process_atl_output = function(param.dir,
   age.vars= c('Nums','StructN','ResN','N')
   bp.vars = 'N'
 
-  if(plot.overall.biomass|plot.biomass.timeseries|plot.biomass.box|plot.max.weight|plot.benthic|plot.spatial.biomass|plot.spatial.biomass.seasonal|plot.sn.rn|plot.length.age|plot.numbers.timeseries|plot.cohort|plot.spatial.overlap|plot.c.mum|plot.all|process.all){
+  if(plot.overall.biomass|plot.biomass.timeseries|plot.biomass.box|plot.weight|plot.benthic|plot.spatial.biomass|plot.spatial.biomass.seasonal|plot.sn.rn|plot.length.age|plot.numbers.timeseries|plot.cohort|plot.spatial.overlap|plot.c.mum|plot.all|process.all){
 
     numbers = list()
     numbers.age = list()
@@ -334,7 +334,7 @@ process_atl_output = function(param.dir,
                                          fgs = param.ls$groups.file,prm_run = param.ls$run.prm,
                                          bboxes = bboxes ))
 
-      if(plot.overall.biomass|plot.biomass.timeseries|plot.biomass.box|plot.max.weight|plot.benthic|plot.spatial.biomass|plot.spatial.biomass.seasonal|process.all|plot.all){
+      if(plot.overall.biomass|plot.biomass.timeseries|plot.biomass.box|plot.weight|plot.benthic|plot.spatial.biomass|plot.spatial.biomass.seasonal|process.all|plot.all){
 
         spatial.biomass = atlantistools::calculate_biomass_spatial(nums = rawdata.main[[1]],
                                                                    sn = rawdata.main[[2]],
@@ -400,7 +400,7 @@ process_atl_output = function(param.dir,
 
       }
 
-      if(plot.max.weight|plot.all|process.all){
+      if(plot.weight|plot.all|process.all){
 
         spatialNumbers = rawdata.main[[1]] %>%
           dplyr::rename(numbers = atoutput)
@@ -416,9 +416,9 @@ process_atl_output = function(param.dir,
           dplyr::filter(!is.na(biomass)) %>%
           dplyr::mutate(meanWeight = biomass/numbers)
 
-        weight <- weight %>%
-          dplyr::group_by(species, polygon,layer, agecl, time) %>%
-          dplyr::summarise(maxMeanWeight = max(meanWeight),.groups="drop")
+        # weight <- weight %>%
+        #   dplyr::group_by(species, polygon,layer, agecl, time) %>%
+        #   dplyr::summarise(maxMeanWeight = max(meanWeight),.groups="drop")
 
         bind.save(weight,'max_weight',out.dir); rm('weight')
         bind.save(spatialNumbers,'spatial_numbers',out.dir); rm('spatialNumbers')

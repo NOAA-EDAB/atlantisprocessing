@@ -32,7 +32,7 @@
 #'@param plot.spatial.biomass logical. Plots showing the spatial (box/level) structure of groups' biomass
 #'@param plot.spatial.biomass.seasonal logical. Plots showing the spatial (box/level) structure of groups' biomass
 #'@param plot.catch logical. Plots annual catch(mt) age based catch (numbers) and age based %ages
-#'@param plot.max.weight logical. Plots the maximum size of fish in each size class over the domain
+#'@param plot.weight logical. Plots the maximum size of fish in each size class over the domain
 #'@param plot.mortality logical. Plots Mortality (F, M1, M2) from two output sources (Mort, SpecificMort)
 #'
 #'@importFrom magrittr "%>%"
@@ -70,7 +70,7 @@ make_atlantis_diagnostic_figures = function(out.dir,
                                             plot.spatial.biomass,
                                             plot.spatial.biomass.seasonal,
                                             plot.catch,
-                                            plot.max.weight,
+                                            plot.weight,
                                             plot.mortality){
 
 
@@ -381,29 +381,131 @@ print("length age")
   }
 
   # Max weight by age class
-  if(plot.max.weight|plot.all){
+  if(plot.weight|plot.all){
     print("max weight")
-    maxSize <- readRDS(file.path(out.dir,'max_weight.rds'))
-    ageClasses <- 1:max(maxSize$agecl)
-    maxSize <- maxSize %>%
+    weight <- readRDS(file.path(out.dir,'max_weight.rds'))
+    # dplyr::filter(weight,species == 'Atlantic mackerel' & time ==10  & agecl == 1)
+    ageClasses <- 1:max(weight$agecl)
+
+    #Plot 1: Max weight-at-age across all box-layer-time by species
+    maxSize <- weight %>%
+      dplyr::filter(time > 20)%>%
       dplyr::group_by(species,agecl) %>%
-      dplyr::summarize(mm=max(maxMeanWeight)/1000,.groups="drop") %>% # convert to kilograms
+      dplyr::summarize(mm=max(meanWeight)/1000,.groups="drop") %>% # convert to kilograms
       dplyr::mutate(agecl = as.factor(agecl))
+    weight$agecl = as.factor(weight$agecl)
+    max.match = weight %>%
+      dplyr::filter(time > 20)%>%
+      dplyr::arrange(species,agecl,time)%>%
+      dplyr::left_join(maxSize, by = c('species','agecl'))%>%
+      dplyr::mutate(match = (meanWeight/1000) == mm)%>%
+      dplyr::filter(match == T)%>%
+      dplyr::group_by(species,agecl,time)%>%
+      dplyr::summarise(match.string = max(time))%>%
+      dplyr::select(species,agecl,match.string)
 
-    weight.plot <- atlantistools:::custom_map(data = maxSize, x = "agecl", y = "mm") +
+    maxSize = maxSize %>%
+      dplyr::left_join(max.match)
+
+    max.weight.plot <- atlantistools:::custom_map(data = maxSize, x = "agecl", y = "mm") +
       ggplot2::geom_bar(stat = "identity") +
+      ggplot2::geom_text(data=maxSize,ggplot2::aes(x = agecl,y = mm,label = match.string),vjust =-1)+
       atlantistools::theme_atlantis()
-    weight.plot <- atlantistools:::custom_wrap( weight.plot, col = "species", ncol = 7)
+    max.weight.plot <- atlantistools:::custom_wrap( max.weight.plot, col = "species", ncol = 7)
 
-    weight.plot <- atlantistools:::ggplot_custom( weight.plot) +
-      ggplot2::scale_y_continuous(labels = scales::label_number(accuracy = 0.1))
-    weight.plot <- ggplot2::update_labels( weight.plot,labels = list(x='Age Class', y = 'Weight (Kg)'))
-    weight.plot <-  add.title( weight.plot, paste0("Maximum Weight"))
-    weight.plot <-  weight.plot + ggplot2::scale_x_discrete(labels = dput(as.character(ageClasses)))
+    max.weight.plot <- atlantistools:::ggplot_custom( max.weight.plot) +
+      ggplot2::scale_y_continuous(labels = scales::label_number(accuracy = 0.1),
+                                  limits = function(x) {return(c(min(x),max(x)*1.1))})
+                                  # expand = ggplot2::expansion(mult = c(1.5,1.5)))
+    max.weight.plot <- ggplot2::update_labels( max.weight.plot,labels = list(x='Age Class', y = 'Weight (Kg)'))
+    max.weight.plot <-  add.title( max.weight.plot, paste0("Maximum Weight"))
+    max.weight.plot <-  max.weight.plot + ggplot2::scale_x_discrete(labels = dput(as.character(ageClasses)))
+
+    #Plot 2: Mean Weight-at-age timeseries
+    weight.ts = weight%>%
+      dplyr::group_by(time,species,agecl)%>%
+      dplyr::summarise(meanWeight = mean(meanWeight,na.rm=T)/1000)
 
 
-    pdf(file = file.path(fig.dir,paste0(run.name,' Max Weight.pdf')),width = 20, height = 20, onefile = T)
-    gridExtra::grid.arrange(weight.plot)
+    weight.ts.plot =ggplot2::ggplot(weight.ts,ggplot2::aes(x = time, y = meanWeight,col = agecl))+
+      ggplot2::geom_line()+
+      ggplot2::facet_wrap(~species,ncol =7,scale = 'free_y')+
+      ggplot2::theme_bw()+
+      ggplot2::xlab('Time')+
+      ggplot2::ylab('Mean Weight (kg)')+
+      ggplot2::ggtitle('Mean Weight-at-age over Time')+
+      ggplot2::theme(strip.background = ggplot2::element_blank(),
+                     plot.title = ggplot2::element_text(hjust = 0.5))
+
+    #Plot 3: Max Weight-at-age timeseries
+    max.weight.ts = weight%>%
+      dplyr::group_by(time,species,agecl)%>%
+      dplyr::summarise(meanWeight = max(meanWeight,na.rm=T)/1000)
+
+
+    max.weight.ts.plot =ggplot2::ggplot(max.weight.ts,ggplot2::aes(x = time, y = meanWeight,col = agecl))+
+      ggplot2::geom_line()+
+      ggplot2::facet_wrap(~species,ncol =7,scale = 'free_y')+
+      ggplot2::theme_bw()+
+      ggplot2::xlab('Time')+
+      ggplot2::ylab('Max Weight (kg)')+
+      ggplot2::ggtitle('Max Weight-at-age over Time')+
+      ggplot2::theme(strip.background = ggplot2::element_blank(),
+                     plot.title = ggplot2::element_text(hjust = 0.5))
+
+    #Plot 4: Distribution of weight-at-age at fixed time slices in model
+
+    weight.decade = weight %>%
+      dplyr::mutate(decade = floor(time/10)*10)
+
+    weight.lim = weight %>%
+      group_by(species,agecl)%>%
+      summarise(weight.min = min(meanWeight)/1000,
+                weight.max = max(meanWeight)/1000)
+
+    ages = sort(unique(weight.decade$agecl))
+    species.names = sort(unique(weight.decade$species))
+
+    plot.decade.ls = list()
+
+    a=s=1
+    for(a in 1:length(ages)){
+
+      plot.species.ls = list()
+
+      for(s in 1:length(species)){
+
+        this.agecl = weight.decade %>%
+          dplyr::filter(agecl == ages[a] & species == species.names[s] )%>%
+          dplyr::mutate(meanWeight = meanWeight/1000)%>%
+          dplyr::left_join(weight.lim, by = c('species','agecl'))
+
+       plot.species.ls[[s]] = ggplot2::ggplot(this.agecl, ggplot2::aes(x = meanWeight,color = factor(decade)))+
+          ggplot2::geom_density()+
+          ggplot2::xlim(c(this.agecl$weight.min[1],this.agecl$weight.max[1]))+
+          ggplot2::scale_color_manual(name = 'Decade', values = RColorBrewer::brewer.pal(length(ages),'Paired'))+
+          ggplot2::theme_bw()+
+          # ggplot2::xlab('Weight (kg)')+
+          # ggplot2::ylab('Density')+
+          ggplot2::ggtitle(species.names[s])+
+          ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5),
+                         axis.title = ggplot2::element_blank())
+
+      }
+
+      species.plot = ggpubr::ggarrange(plotlist =plot.species.ls,nrow = 9,ncol = 7,common.legend = T,legend = 'bottom')
+      species.plot =ggpubr::annotate_figure(species.plot,
+                              left = 'Density',
+                              bottom = 'Weight (kg)',
+                              top = paste0('Weigth Distribution by Decade (Age',ages[a],')'))
+      plot.decade.ls[[a]] = species.plot
+    }
+
+    pdf(file = file.path(fig.dir,paste0(run.name,' Weight.pdf')),width = 30, height = 30, onefile = T)
+    gridExtra::grid.arrange(max.weight.plot)
+    gridExtra::grid.arrange(weight.ts.plot)
+    gridExtra::grid.arrange(max.weight.ts.plot)
+    for(d in 1:length(plot.decade.ls)){ gridExtra::grid.arrange(plot.decade.ls[[d]]) }
     dev.off()
 
 
