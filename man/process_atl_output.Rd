@@ -33,7 +33,7 @@ process_atl_output(
   plot.spatial.biomass.seasonal = F,
   plot.catch = F,
   plot.mortality = F,
-  plot.max.weight = F,
+  plot.weight = F,
   plot.spatial.overlap = F
 )
 }
@@ -93,8 +93,6 @@ process_atl_output(
 \item{plot.catch}{logical. Plots annual catch(mt) age based catch (numbers) and age based \%ages}
 
 \item{plot.mortality}{logical. Plots Mortality (F, M1, M2) from two output sources (Mort, SpecificMort)}
-
-\item{plot.max.weight}{logical. Plots the maximum size of fish in each size class over the domain}
 
 \item{plot.spatial.overlap}{Boolean}
 }
