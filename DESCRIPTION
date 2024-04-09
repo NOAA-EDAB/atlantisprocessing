@@ -33,7 +33,8 @@ Imports:
     tidyr,
     magrittr,
     reshape2,
-    gtable
+    gtable,
+    ggpubr
 Remotes:
    Atlantis-Ecosystem-Model/atlantistools,
    r4atlantis/atlantisom

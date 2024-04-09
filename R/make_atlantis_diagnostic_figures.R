@@ -459,8 +459,8 @@ print("length age")
       dplyr::mutate(decade = floor(time/10)*10)
 
     weight.lim = weight %>%
-      group_by(species,agecl)%>%
-      summarise(weight.min = min(meanWeight)/1000,
+      dplyr::group_by(species,agecl)%>%
+      dplyr::summarise(weight.min = min(meanWeight)/1000,
                 weight.max = max(meanWeight)/1000)
 
     ages = sort(unique(weight.decade$agecl))
