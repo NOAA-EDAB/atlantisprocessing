@@ -48,12 +48,12 @@ process_atl_output = function(param.dir,
                               plot.spatial.biomass=F,
                               plot.spatial.biomass.seasonal = F,
                               plot.catch =F,
-                              plot.spatial.catch
+                              plot.spatial.catch =F,
                               plot.mortality=F,
                               plot.weight = F,
                               plot.spatial.overlap =F
 
-                              ){
+){
 
   # memory.limit(size = 56000)
   #source(here::here('R','Post_Processing','load_nc_temp.R'))
@@ -86,7 +86,7 @@ process_atl_output = function(param.dir,
   codes.age = atlantistools::get_age_acronyms(param.ls$groups.file)
   groups.data = atlantistools::load_fgs(param.ls$groups.file)
 
-# Read Physics ------------------------------------------------------------
+  # Read Physics ------------------------------------------------------------
 
   #Always make volume objects
   vol.dz = atlantistools::load_nc_physics(nc = param.ls$main.nc, select_physics = c('volume','dz'),
@@ -126,7 +126,7 @@ process_atl_output = function(param.dir,
     gc()
   }
 
-# Other Parameter Objects -------------------------------------------------
+  # Other Parameter Objects -------------------------------------------------
   #Read in age matrix
   data.age.mat = atlantistools::prm_to_df(prm_biol = param.ls$biol.prm, fgs = param.ls$groups.file,
                                           group = codes.age, parameter = 'age_mat')
@@ -177,7 +177,7 @@ process_atl_output = function(param.dir,
 
   growth.required = dplyr::select(pd, c(species,agecl, growth_req))
 
-# Process DietCheck -------------------------------------------------------
+  # Process DietCheck -------------------------------------------------------
 
   if(plot.diet|plot.all|process.all){
     if(large.file==F){
@@ -292,11 +292,11 @@ process_atl_output = function(param.dir,
   }
 
 
-# Main NetCDF objects -----------------------------------------------------
+  # Main NetCDF objects -----------------------------------------------------
 
   #Set up biological variable groups
   group.types = dplyr::bind_rows(list(data.frame(species = groups.age,group = 'age'),
-       data.frame(species = groups.bp, group = 'bp'))
+                                      data.frame(species = groups.bp, group = 'bp'))
   )
   age.vars= c('Nums','StructN','ResN','N')
   bp.vars = 'N'
@@ -334,6 +334,7 @@ process_atl_output = function(param.dir,
                          MoreArgs = list(nc = param.ls$main.nc, bps = bio.pools,
                                          fgs = param.ls$groups.file,prm_run = param.ls$run.prm,
                                          bboxes = bboxes ))
+
 
       if(plot.overall.biomass|plot.biomass.timeseries|plot.biomass.box|plot.weight|plot.benthic|plot.spatial.biomass|plot.spatial.biomass.seasonal|plot.spatial.catch|process.all|plot.all){
 
@@ -401,7 +402,7 @@ process_atl_output = function(param.dir,
 
       }
 
-      if(plot.weight|plot.all|process.all){
+      if(plot.max.weight|plot.all|process.all){
 
         spatialNumbers = rawdata.main[[1]] %>%
           dplyr::rename(numbers = atoutput)
@@ -417,9 +418,9 @@ process_atl_output = function(param.dir,
           dplyr::filter(!is.na(biomass)) %>%
           dplyr::mutate(meanWeight = biomass/numbers)
 
-        # weight <- weight %>%
-        #   dplyr::group_by(species, polygon,layer, agecl, time) %>%
-        #   dplyr::summarise(maxMeanWeight = max(meanWeight),.groups="drop")
+        weight <- weight %>%
+          dplyr::group_by(species, polygon,layer, agecl, time) %>%
+          dplyr::summarise(maxMeanWeight = max(meanWeight),.groups="drop")
 
         bind.save(weight,'max_weight',out.dir); rm('weight')
         bind.save(spatialNumbers,'spatial_numbers',out.dir); rm('spatialNumbers')
@@ -485,7 +486,7 @@ process_atl_output = function(param.dir,
 
     #large file size accomodations: Pre-aggregate and then run normal routine
 
-   if(large.file == T){
+    if(large.file == T){
 
       for(i in 1:nrow(group.types)){
 
@@ -608,7 +609,7 @@ process_atl_output = function(param.dir,
     }
   }
 
-# PROD netCDF objectsspatialBiomass# PROD netCDF objects -----------------------------------------------------
+  # PROD netCDF objectsspatialBiomass# PROD netCDF objects -----------------------------------------------------
 
 
   if(plot.growth.cons|plot.diet|process.all|plot.all){
@@ -764,7 +765,7 @@ process_atl_output = function(param.dir,
 
   }
 
-# Do Recruitment ----------------------------------------------------------
+  # Do Recruitment ----------------------------------------------------------
 
   if(plot.recruits|process.all|plot.all){
     ssb.recruits = atlantistools::load_rec(yoy = param.ls$yoy, ssb = param.ls$ssb,prm_biol = param.ls$biol.prm )
@@ -772,7 +773,7 @@ process_atl_output = function(param.dir,
     rm(ssb.recruits)
   }
 
-# Do catch -------------------------------------------------------------------
+  # Do catch -------------------------------------------------------------------
 
   if(plot.catch|plot.spatial.catch|process.all|plot.all){
     catch = atlantistools::load_nc(param.ls$catch,
