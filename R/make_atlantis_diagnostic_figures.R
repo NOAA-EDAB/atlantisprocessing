@@ -70,6 +70,7 @@ make_atlantis_diagnostic_figures = function(out.dir,
                                             plot.spatial.biomass,
                                             plot.spatial.biomass.seasonal,
                                             plot.catch,
+                                            plot.spatial.catch,
                                             plot.weight,
                                             plot.mortality){
 
@@ -1125,5 +1126,57 @@ print("spatial biomass")
                            species.list = NULL,
                            plot.presence = T,
                            save.fig = T)
+  }
+
+  if(plot.spatial.catch|plot.all){
+
+    bgm = atlantistools::convert_bgm(bgm = param.ls$bgm)
+
+    biomass.box = readRDS(file.path(out.dir,'biomass_box.rds'))%>%
+      dplyr::filter(time >= (max(time)-10))%>%
+      dplyr::group_by(species,polygon)%>%
+      dplyr::summarise(biomass = mean(atoutput,na.rm=T))
+
+    catch = readRDS(file.path(out.dir,'catch.rds')) %>%
+      dplyr::filter(time >= (max(time)-10))%>%
+      dplyr::group_by(species,polygon)%>%
+      dplyr::summarise(catch = mean(atoutput,na.rm=T))
+
+    biomass.catch.box = biomass.box %>%
+      dplyr::left_join(catch)
+
+    i=1
+    pdf(paste0(fig.dir,'spatial_biomass_catch.pdf'))
+    for(i in 1:nrow(group.index)){
+
+      biomass.catch.spp =biomass.catch.box %>%
+        dplyr::filter(species == group.index$LongName[i])
+
+      biomass.catch.spp.polygon = bgm %>%
+        dplyr::left_join(biomass.catch.spp)
+
+      p1 = ggplot2::ggplot(biomass.catch.spp.polygon, ggplot2::aes(x = long, y = lat, fill = biomass, group = polygon))+
+        ggplot2::geom_polygon(color = 'black',lwd = 0.3)+
+        ggplot2::coord_equal()+
+        ggplot2::scale_fill_viridis_c()+
+        ggplot2::ggtitle('Biomass')+
+        ggplot2::theme_bw()+
+        ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5),
+                       legend.position = 'bottom',
+                       legend.key.width = ggplot2::unit(0.4,'in'))
+      p2 = ggplot2::ggplot(biomass.catch.spp.polygon, ggplot2::aes(x = long, y = lat, fill = catch, group = polygon))+
+        ggplot2::geom_polygon(color = 'black',lwd = 0.3)+
+        ggplot2::coord_equal()+
+        ggplot2::scale_fill_viridis_c()+
+        ggplot2::ggtitle('Catch')+
+        ggplot2::theme_bw()+
+        ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5),
+                       legend.position = 'bottom',
+                       legend.key.width = ggplot2::unit(0.4,'in'))
+
+      gridExtra::grid.arrange(p1,p2, nrow = 1, top = group.index$LongName[i])
+
+    }
+    dev.off()
   }
 }

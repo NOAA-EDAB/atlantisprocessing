@@ -48,6 +48,7 @@ process_atl_output = function(param.dir,
                               plot.spatial.biomass=F,
                               plot.spatial.biomass.seasonal = F,
                               plot.catch =F,
+                              plot.spatial.catch
                               plot.mortality=F,
                               plot.weight = F,
                               plot.spatial.overlap =F
@@ -300,7 +301,7 @@ process_atl_output = function(param.dir,
   age.vars= c('Nums','StructN','ResN','N')
   bp.vars = 'N'
 
-  if(plot.overall.biomass|plot.biomass.timeseries|plot.biomass.box|plot.weight|plot.benthic|plot.spatial.biomass|plot.spatial.biomass.seasonal|plot.sn.rn|plot.length.age|plot.numbers.timeseries|plot.cohort|plot.spatial.overlap|plot.c.mum|plot.all|process.all){
+  if(plot.overall.biomass|plot.biomass.timeseries|plot.biomass.box|plot.weight|plot.benthic|plot.spatial.biomass|plot.spatial.biomass.seasonal|plot.sn.rn|plot.length.age|plot.numbers.timeseries|plot.cohort|plot.spatial.overlap|plot.c.mum|plot.spatial.catch|plot.all|process.all){
 
     numbers = list()
     numbers.age = list()
@@ -334,7 +335,7 @@ process_atl_output = function(param.dir,
                                          fgs = param.ls$groups.file,prm_run = param.ls$run.prm,
                                          bboxes = bboxes ))
 
-      if(plot.overall.biomass|plot.biomass.timeseries|plot.biomass.box|plot.weight|plot.benthic|plot.spatial.biomass|plot.spatial.biomass.seasonal|process.all|plot.all){
+      if(plot.overall.biomass|plot.biomass.timeseries|plot.biomass.box|plot.weight|plot.benthic|plot.spatial.biomass|plot.spatial.biomass.seasonal|plot.spatial.catch|process.all|plot.all){
 
         spatial.biomass = atlantistools::calculate_biomass_spatial(nums = rawdata.main[[1]],
                                                                    sn = rawdata.main[[2]],
@@ -375,7 +376,7 @@ process_atl_output = function(param.dir,
         }
 
         #Biomass Box objects
-        if(plot.biomass.box|plot.spatial.biomass.seasonal|process.all|plot.all){
+        if(plot.biomass.box|plot.spatial.catch|plot.spatial.biomass|plot.spatial.biomass.seasonal|process.all|plot.all){
 
           biomass.box = atlantistools::agg_data(spatial.biomass, groups = c('species','polygon','time'), fun = sum)
           bind.save(biomass.box,'biomass_box',out.dir)
@@ -773,7 +774,7 @@ process_atl_output = function(param.dir,
 
 # Do catch -------------------------------------------------------------------
 
-  if(plot.catch|process.all|plot.all){
+  if(plot.catch|plot.spatial.catch|process.all|plot.all){
     catch = atlantistools::load_nc(param.ls$catch,
                                    fgs = param.ls$groups.file,
                                    bps = bio.pools,
@@ -786,12 +787,12 @@ process_atl_output = function(param.dir,
       dplyr::select(species,time,atoutput) %>%
       dplyr::mutate(time = time/365)
 
-    # saveRDS(catch,file.path(out.dir,'catch.rds'))
+    saveRDS(catch,file.path(out.dir,'catch.rds'))
     saveRDS(totcatch,file.path(out.dir,'totcatch.rds'))
     saveRDS(catchmt,file.path(out.dir,'catchmt.rds'))
 
     rm(catch,totcatch,catchmt)
-  }
+    }
 
   # Do mortality -------------------------------------------------------------------
 
