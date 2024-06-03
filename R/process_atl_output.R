@@ -402,7 +402,7 @@ process_atl_output = function(param.dir,
 
       }
 
-      if(plot.max.weight|plot.all|process.all){
+      if(plot.weight|plot.all|process.all){
 
         spatialNumbers = rawdata.main[[1]] %>%
           dplyr::rename(numbers = atoutput)
