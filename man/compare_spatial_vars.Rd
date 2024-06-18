@@ -30,7 +30,7 @@ compare_spatial_vars(
 
 \item{param.ls}{list generated from get_atl_paramfiles()}
 
-\item{data.type}{which type of data is being compared: 'proportion','absolute'}
+\item{data.type}{which type of data is being compared: 'proportion','value'}
 
 \item{comparison.type}{which type of comparison should be made: 'difference','scalar'}
 

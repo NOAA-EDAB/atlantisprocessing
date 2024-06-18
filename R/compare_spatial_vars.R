@@ -6,7 +6,7 @@
 #' @param ref.file string. path to file that contains reference spatial data with format (box|var.name|statistic|value)
 #' @param out.dir string. path to desired location of post-processed output
 #' @param param.ls list generated from get_atl_paramfiles()
-#' @param data.type which type of data is being compared: 'proportion','absolute'
+#' @param data.type which type of data is being compared: 'proportion','value'
 #' @param comparison.type which type of comparison should be made: 'difference','scalar'
 #' @param ref.years numeric vector with first and last year (years from start) for comparison period
 #' @param plot logical. do you want to generate a plot
@@ -79,8 +79,8 @@ compare_spatial_vars = function(param.dir,
         dplyr::mutate(model.total = sum(atoutput))%>%
         dplyr::ungroup()
 
-      #Calculate proportion or absolute for model.val
-      if(data.type == 'absolute'){
+      #Calculate proportion or value for model.val
+      if(data.type == 'value'){
         run.data.yr = run.data.yr %>%
           dplyr::mutate(model.val = atoutput)
       }else if(data.type == 'proportion'){
@@ -164,22 +164,37 @@ compare_spatial_vars = function(param.dir,
       #1: Maps of ref values
       p1 = ggplot2::ggplot(dplyr::filter(plot.data,run.name == run.names[1]),ggplot2::aes(x = long,y = lat, group = polygon, fill = ref.value))+
         ggplot2::geom_polygon(color = 'black')+
-        ggplot2::ggtitle('Reference Value')
+        ggplot2::ggtitle('Reference Value')+
+        ggplot2::scale_fill_gradient(low = 'white',high =  'forestgreen',name = paste0('reference\n',data.type))+
+        ggplot2::theme_bw()+
+        ggplot2::theme(
+          plot.title = ggplot2::element_text(hjust = 0.5)
+        )
 
       #2: Maps of run values
 
       p2 = ggplot2::ggplot(plot.data,ggplot2::aes(x = long,y = lat, group = polygon, fill = model.val))+
         ggplot2::geom_polygon(color = 'black')+
         ggplot2::facet_wrap(~run.name)+
-        ggplot2::ggtitle('model value')
+        ggplot2::ggtitle('Model Value')+
+        ggplot2::scale_fill_gradient(low = 'white',high = 'forestgreen',name = paste0('model\n',data.type))+
+        ggplot2::theme_bw()+
+        ggplot2::theme(
+          plot.title = ggplot2::element_text(hjust = 0.5)
+        )
 
       #2: Maps of comparisons between runs and ref values
       p3 =ggplot2::ggplot(plot.data,ggplot2::aes(x = long,y = lat, group = polygon, fill = compare.val))+
         ggplot2::geom_polygon(color = 'black')+
         ggplot2::facet_wrap(~run.name,nrow =1)+
-        ggplot2::ggtitle(paste0('Comparison: ',comparison.type))
+        ggplot2::ggtitle(paste0('Comparison: ',comparison.type))+
+        ggplot2::scale_fill_gradient2(low = 'red4',mid = 'white',high = 'blue4',name = paste0(data.type,'\n',comparison.type),)+
+        ggplot2::theme_bw()+
+        ggplot2::theme(
+          plot.title = ggplot2::element_text(hjust = 0.5)
+        )
 
-      plot.layout = matrix(c(1,1,2,2,1,1,3,3),byrow = T,nrow =2)
+      plot.layout = matrix(c(1,1,rep(2,length(run.names)),1,1,rep(3,length(run.names))),byrow = T,nrow =2)
       gridExtra::grid.arrange(p1,p2,p3,nrow = 2,layout_matrix = plot.layout,top = paste0(spp.names[s],":",ref.data$var.name[1],' ',data.type))
 
     }
