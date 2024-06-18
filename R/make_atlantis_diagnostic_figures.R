@@ -30,9 +30,10 @@
 #'@param plot.diet logical. Plots showing predation of and consumption by each functional group
 #'@param plot.consumption Boolean. Plots showing consumption
 #'@param plot.spatial.biomass logical. Plots showing the spatial (box/level) structure of groups' biomass
+#'@param plot.spatial.catch logical. Plots showing the spatial (box/level) structure of groups' catch
 #'@param plot.spatial.biomass.seasonal logical. Plots showing the spatial (box/level) structure of groups' biomass
 #'@param plot.catch logical. Plots annual catch(mt) age based catch (numbers) and age based %ages
-#'@param plot.max.weight logical. Plots the maximum size of fish in each size class over the domain
+#'@param plot.weight logical. Plots the maximum size of fish in each size class over the domain
 #'@param plot.mortality logical. Plots Mortality (F, M1, M2) from two output sources (Mort, SpecificMort)
 #'
 #'@importFrom magrittr "%>%"
@@ -382,7 +383,7 @@ make_atlantis_diagnostic_figures = function(out.dir,
   }
 
   # Max weight by age class
-  if(plot.max.weight|plot.all){
+  if(plot.weight|plot.all){
     print("max weight")
     maxSize <- readRDS(file.path(out.dir,'max_weight.rds'))
     ageClasses <- 1:max(maxSize$agecl)
@@ -1017,7 +1018,7 @@ make_atlantis_diagnostic_figures = function(out.dir,
   # This needs to be reworked
   if(F & plot.spatial.biomass.seasonal){
     #source(here::here('R','plot_biomass_box_summary.R'))
-    print("spatial biomass")
+    print("spatial biomass seasonal")
     plot_biomass_box_season(bio.box = readRDS(file.path(out.dir,'biomass_box.rds')),
                             bio.box.invert = readRDS(file.path(out.dir,'biomass_box_invert.rds')),
                             fig.dir = fig.dir,
@@ -1027,7 +1028,7 @@ make_atlantis_diagnostic_figures = function(out.dir,
   }
 
   if(plot.spatial.catch|plot.all){
-
+    print("spatial catch")
     bgm = atlantistools::convert_bgm(bgm = param.ls$bgm)
 
     biomass.box = readRDS(file.path(out.dir,'biomass_box.rds'))%>%
@@ -1044,7 +1045,7 @@ make_atlantis_diagnostic_figures = function(out.dir,
       dplyr::left_join(catch)
 
     i=1
-    pdf(paste0(fig.dir,'spatial_biomass_catch.pdf'))
+    pdf(paste0(fig.dir,'/spatial_biomass_catch.pdf'))
     for(i in 1:nrow(group.index)){
 
       biomass.catch.spp =biomass.catch.box %>%
