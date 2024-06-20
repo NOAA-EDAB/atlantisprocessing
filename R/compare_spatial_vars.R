@@ -3,7 +3,7 @@
 #' @param param.dir string. Path to location of atlantis parameter files
 #' @param run.dirs character vector of paths to location of atlantis output files
 #' @param run.names character vector of run names corresponding to run.dirs
-#' @param ref.file string. path to file that contains reference spatial data with format (box|var.name|statistic|value)
+#' @param ref.data dataframe  that contains reference spatial data with format (polygon|species|var.name|statistic|ref.value)
 #' @param out.dir string. path to desired location of post-processed output
 #' @param param.ls list generated from get_atl_paramfiles()
 #' @param data.type which type of data is being compared: 'proportion','value'
@@ -25,7 +25,7 @@
 compare_spatial_vars = function(param.dir,
                                 run.dirs,
                                 run.names,
-                                ref.file,
+                                ref.data,
                                 out.dir,
                                 param.ls,
                                 data.type = 'proportion',
@@ -34,7 +34,8 @@ compare_spatial_vars = function(param.dir,
                                 plot = T){
   #Pull in reference data
 
-    ref.data = read.csv(ref.file, as.ist =T)%>%
+    # ref.data = read.csv(ref.file, as.ist =T)%>%
+  ref.data = ref.data %>%
       dplyr::mutate(polygon = as.factor(polygon))
 
     ##Check if ref.data$statistic == data.type
