@@ -70,7 +70,7 @@ compare_spatial_vars = function(param.dir,
       }
 
       run.data.yr = run.data%>%
-        dplyr::mutate(polygon = as.factor(polygon -1))%>%
+        dplyr::mutate(polygon = as.factor(polygon))%>%
         ##Calculate proportion by box over ref.years
         dplyr::filter( time>= ref.years[1] & time <= ref.years[2]) %>%
         ##Calculate mean by box over ref.years
