@@ -9,6 +9,7 @@ compare_spatial_vars(
   run.dirs,
   run.names,
   ref.data,
+  init.data,
   out.dir,
   param.ls,
   data.type = "proportion",
@@ -25,6 +26,8 @@ compare_spatial_vars(
 \item{run.names}{character vector of run names corresponding to run.dirs}
 
 \item{ref.data}{dataframe  that contains reference spatial data with format (polygon|species|var.name|statistic|ref.value)}
+
+\item{init.data}{dataframe that contains initial spatial data  with format (polygon|species|var.name|statistic|init.value)}
 
 \item{out.dir}{string. path to desired location of post-processed output}
 
