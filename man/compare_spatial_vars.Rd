@@ -11,6 +11,7 @@ compare_spatial_vars(
   ref.data,
   init.data,
   out.dir,
+  out.name,
   param.ls,
   data.type = "proportion",
   comparison.type = "difference",
@@ -30,6 +31,8 @@ compare_spatial_vars(
 \item{init.data}{dataframe that contains initial spatial data  with format (polygon|species|var.name|statistic|init.value)}
 
 \item{out.dir}{string. path to desired location of post-processed output}
+
+\item{out.name}{string. name for output file prefix}
 
 \item{param.ls}{list generated from get_atl_paramfiles()}
 
