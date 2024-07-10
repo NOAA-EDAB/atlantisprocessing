@@ -127,7 +127,7 @@ compare_spatial_vars = function(param.dir,
                   comparison.type = comparison.type)
 
   # out.name = paste(run.names,collapse = '_')
-  saveRDS(run.data,paste0(out.dir,out.name,'.rds'))
+  saveRDS(run.data.all,paste0(out.dir,out.name,'.rds'))
 
   if(plot == T){
     #If plotting create PDF with the following plots
