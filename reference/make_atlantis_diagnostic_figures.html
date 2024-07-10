@@ -4,7 +4,7 @@ Creates the full set of diagnostic and summary figures and tables from atlantis 
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]--></head><body data-spy="scroll" data-target="#toc">
-    
+
 
     <div class="container template-reference-topic">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -30,13 +30,13 @@ Creates the full set of diagnostic and summary figures and tables from atlantis 
   </div><!--/.container -->
 </div><!--/.navbar -->
 
-      
+
 
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Creates standard diagnostic figures for Atlantis output</h1>
-    
+
     <div class="hidden name"><code>make_atlantis_diagnostic_figures.Rd</code></div>
     </div>
 
@@ -82,133 +82,131 @@ Creates the full set of diagnostic and summary figures and tables from atlantis 
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>out.dir</dt>
+
+
+<dl><dt id="arg-out-dir">out.dir<a class="anchor" aria-label="anchor" href="#arg-out-dir"></a></dt>
 <dd><p>string. Path where desired output data should be saved</p></dd>
 
 
-<dt>fig.dir</dt>
+<dt id="arg-fig-dir">fig.dir<a class="anchor" aria-label="anchor" href="#arg-fig-dir"></a></dt>
 <dd><p>string. Path where desired output figures should be saved</p></dd>
 
 
-<dt>atl.dir</dt>
+<dt id="arg-atl-dir">atl.dir<a class="anchor" aria-label="anchor" href="#arg-atl-dir"></a></dt>
 <dd><p>string. Path where atlantis model output is located</p></dd>
 
 
-<dt>param.dir</dt>
+<dt id="arg-param-dir">param.dir<a class="anchor" aria-label="anchor" href="#arg-param-dir"></a></dt>
 <dd><p>string. Path where atlantis parameter files are located</p></dd>
 
 
-<dt>run.prefix</dt>
+<dt id="arg-run-prefix">run.prefix<a class="anchor" aria-label="anchor" href="#arg-run-prefix"></a></dt>
 <dd><p>sring. Prefix specified in Atlantis.bat file that begins each output file</p></dd>
 
 
-<dt>run.name</dt>
+<dt id="arg-run-name">run.name<a class="anchor" aria-label="anchor" href="#arg-run-name"></a></dt>
 <dd><p>string. Prefered name to use for output file names</p></dd>
 
 
-<dt>param.ls</dt>
+<dt id="arg-param-ls">param.ls<a class="anchor" aria-label="anchor" href="#arg-param-ls"></a></dt>
 <dd><p>list. Output from get_atl_paramfiles</p></dd>
 
 
-<dt>benthic.box</dt>
+<dt id="arg-benthic-box">benthic.box<a class="anchor" aria-label="anchor" href="#arg-benthic-box"></a></dt>
 <dd><p>numeric. Box ID for benthic plots</p></dd>
 
 
-<dt>benthic.level</dt>
+<dt id="arg-benthic-level">benthic.level<a class="anchor" aria-label="anchor" href="#arg-benthic-level"></a></dt>
 <dd><p>numeric. Level for benthic plots (default is 4 for NEUS model)</p></dd>
 
 
-<dt>plot.all</dt>
+<dt id="arg-plot-all">plot.all<a class="anchor" aria-label="anchor" href="#arg-plot-all"></a></dt>
 <dd><p>Boolean. Global flag for plotting everything</p></dd>
 
 
-<dt>plot.benthic</dt>
+<dt id="arg-plot-benthic">plot.benthic<a class="anchor" aria-label="anchor" href="#arg-plot-benthic"></a></dt>
 <dd><p>logical. Benthic plots show timeseries of all benthic and epibenthic groups for one box</p></dd>
 
 
-<dt>plot.overall.biomass</dt>
+<dt id="arg-plot-overall-biomass">plot.overall.biomass<a class="anchor" aria-label="anchor" href="#arg-plot-overall-biomass"></a></dt>
 <dd><p>logical. Plots showing the total biomass across all functional groups as stacked barplots</p></dd>
 
 
-<dt>plot.biomass.timeseries</dt>
+<dt id="arg-plot-biomass-timeseries">plot.biomass.timeseries<a class="anchor" aria-label="anchor" href="#arg-plot-biomass-timeseries"></a></dt>
 <dd><p>logical. Plots showing biomass-related timeseries on various aggregations  and reference points</p></dd>
 
 
-<dt>plot.length.age</dt>
+<dt id="arg-plot-length-age">plot.length.age<a class="anchor" aria-label="anchor" href="#arg-plot-length-age"></a></dt>
 <dd><p>logical. Plots relating to the length-age relationship of age-structured groups</p></dd>
 
 
-<dt>plot.biomass.box</dt>
+<dt id="arg-plot-biomass-box">plot.biomass.box<a class="anchor" aria-label="anchor" href="#arg-plot-biomass-box"></a></dt>
 <dd><p>logical. Plots relating to biomass but grouped by box</p></dd>
 
 
-<dt>plot.c.mum</dt>
+<dt id="arg-plot-c-mum">plot.c.mum<a class="anchor" aria-label="anchor" href="#arg-plot-c-mum"></a></dt>
 <dd><p>logical. Plots and tables related to tuning C and mum parameters</p></dd>
 
 
-<dt>plot.sn.rn</dt>
+<dt id="arg-plot-sn-rn">plot.sn.rn<a class="anchor" aria-label="anchor" href="#arg-plot-sn-rn"></a></dt>
 <dd><p>logical. Plots relating to SN and RN timeseries</p></dd>
 
 
-<dt>plot.recruits</dt>
+<dt id="arg-plot-recruits">plot.recruits<a class="anchor" aria-label="anchor" href="#arg-plot-recruits"></a></dt>
 <dd><p>logical. Plots of recruitment and SSB timeseries</p></dd>
 
 
-<dt>plot.numbers.timeseries</dt>
+<dt id="arg-plot-numbers-timeseries">plot.numbers.timeseries<a class="anchor" aria-label="anchor" href="#arg-plot-numbers-timeseries"></a></dt>
 <dd><p>logical. Plots showing timeseries of numbers (as opposed to biomass)</p></dd>
 
 
-<dt>plot.physics</dt>
+<dt id="arg-plot-physics">plot.physics<a class="anchor" aria-label="anchor" href="#arg-plot-physics"></a></dt>
 <dd><p>logical. Plots of physical statevariables as well as fluxes</p></dd>
 
 
-<dt>plot.growth.cons</dt>
+<dt id="arg-plot-growth-cons">plot.growth.cons<a class="anchor" aria-label="anchor" href="#arg-plot-growth-cons"></a></dt>
 <dd><p>logical. Plots relating to growth and consumption</p></dd>
 
 
-<dt>plot.cohort</dt>
+<dt id="arg-plot-cohort">plot.cohort<a class="anchor" aria-label="anchor" href="#arg-plot-cohort"></a></dt>
 <dd><p>logical. Plots showing timeseries of each cohort across age-structured groups</p></dd>
 
 
-<dt>plot.diet</dt>
+<dt id="arg-plot-diet">plot.diet<a class="anchor" aria-label="anchor" href="#arg-plot-diet"></a></dt>
 <dd><p>logical. Plots showing predation of and consumption by each functional group</p></dd>
 
 
-<dt>plot.consumption</dt>
+<dt id="arg-plot-consumption">plot.consumption<a class="anchor" aria-label="anchor" href="#arg-plot-consumption"></a></dt>
 <dd><p>Boolean. Plots showing consumption</p></dd>
 
 
-<dt>plot.spatial.biomass</dt>
+<dt id="arg-plot-spatial-biomass">plot.spatial.biomass<a class="anchor" aria-label="anchor" href="#arg-plot-spatial-biomass"></a></dt>
 <dd><p>logical. Plots showing the spatial (box/level) structure of groups' biomass</p></dd>
 
 
-<dt>plot.spatial.biomass.seasonal</dt>
+<dt id="arg-plot-spatial-biomass-seasonal">plot.spatial.biomass.seasonal<a class="anchor" aria-label="anchor" href="#arg-plot-spatial-biomass-seasonal"></a></dt>
 <dd><p>logical. Plots showing the spatial (box/level) structure of groups' biomass</p></dd>
 
 
-<dt>plot.catch</dt>
+<dt id="arg-plot-catch">plot.catch<a class="anchor" aria-label="anchor" href="#arg-plot-catch"></a></dt>
 <dd><p>logical. Plots annual catch(mt) age based catch (numbers) and age based %ages</p></dd>
 
 
-<dt>plot.spatial.catch</dt>
+<dt id="arg-plot-spatial-catch">plot.spatial.catch<a class="anchor" aria-label="anchor" href="#arg-plot-spatial-catch"></a></dt>
 <dd><p>logical. Plots showing the spatial (box/level) structure of groups' catch</p></dd>
 
 
-<dt>plot.weight</dt>
+<dt id="arg-plot-weight">plot.weight<a class="anchor" aria-label="anchor" href="#arg-plot-weight"></a></dt>
 <dd><p>logical. Plots the maximum size of fish in each size class over the domain</p></dd>
 
 
-<dt>plot.mortality</dt>
+<dt id="arg-plot-mortality">plot.mortality<a class="anchor" aria-label="anchor" href="#arg-plot-mortality"></a></dt>
 <dd><p>logical. Plots Mortality (F, M1, M2) from two output sources (Mort, SpecificMort)</p></dd>
 
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    
-
-<p>A series of figures and tables based on output grouping flags</p>
-
-
+    <p>A series of figures and tables based on output grouping flags</p>
 <p>Author: Ryan Morse, modified by J. Caracappa</p>
     </div>
 
@@ -224,15 +222,15 @@ Creates the full set of diagnostic and summary figures and tables from atlantis 
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
 </div>
 
       </footer></div>
 
-  
 
 
-  
+
+
 
   </body></html>
 
