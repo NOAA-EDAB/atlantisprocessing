@@ -6,6 +6,7 @@
 #' @param ref.data dataframe  that contains reference spatial data with format (polygon|species|var.name|statistic|ref.value)
 #' @param init.data dataframe that contains initial spatial data  with format (polygon|species|var.name|statistic|init.value)
 #' @param out.dir string. path to desired location of post-processed output
+#' @param out.name string. name for output file prefix
 #' @param param.ls list generated from get_atl_paramfiles()
 #' @param data.type which type of data is being compared: 'proportion','value'
 #' @param comparison.type which type of comparison should be made: 'difference','scalar'
@@ -29,6 +30,7 @@ compare_spatial_vars = function(param.dir,
                                 ref.data,
                                 init.data,
                                 out.dir,
+                                out.name,
                                 param.ls,
                                 data.type = 'proportion',
                                 comparison.type = 'difference',
@@ -124,7 +126,7 @@ compare_spatial_vars = function(param.dir,
     dplyr::mutate(data.type = data.type,
                   comparison.type = comparison.type)
 
-  out.name = paste(run.names,collapse = '_')
+  # out.name = paste(run.names,collapse = '_')
   saveRDS(run.data,paste0(out.dir,out.name,'.rds'))
 
   if(plot == T){
@@ -135,7 +137,7 @@ compare_spatial_vars = function(param.dir,
 
     #Loop over species with 3+ plots per page (ref, model, comparisons)
 
-    pdf(paste0(out.dir,out.name,'.pdf'), width = 12, height = 8)
+    pdf(paste0(out.dir,out.name,'.pdf'), width =6+(3*length(run.names)), height =10)
     for(s in 1:length(spp.names)){
 
       #Get species data
@@ -204,7 +206,7 @@ compare_spatial_vars = function(param.dir,
       #4: Maps of comparisons between runs and ref values
       p4 =ggplot2::ggplot(plot.data,ggplot2::aes(x = long,y = lat, group = polygon, fill = compare.val))+
         ggplot2::geom_polygon(color = 'black')+
-        ggplot2::facet_wrap(~run.name,nrow =1)+
+        ggplot2::facet_wrap(~run.name)+
         ggplot2::ggtitle(paste0('Comparison: ',comparison.type))+
         ggplot2::scale_fill_gradient2(low = 'red4',mid = 'white',high = 'blue4',name = paste0(data.type,'\n',comparison.type),)+
         ggplot2::theme_bw()+
@@ -212,7 +214,7 @@ compare_spatial_vars = function(param.dir,
           plot.title = ggplot2::element_text(hjust = 0.5)
         )
 
-      plot.layout = matrix(c(1,1,rep(3,length(run.names)),2,2,rep(4,length(run.names))),byrow = T,nrow =2)
+      plot.layout = matrix(c(1,1,rep(3,length(run.names)+1),2,2,rep(4,length(run.names)+1)),byrow = T,nrow =2)
       gridExtra::grid.arrange(p1,p2,p3,p4,nrow = 2,layout_matrix = plot.layout,top = paste0(spp.names[s],":",ref.data$var.name[1],' ',data.type))
 
     }
