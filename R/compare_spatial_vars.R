@@ -142,6 +142,13 @@ compare_spatial_vars = function(param.dir,
 
       #Get species data
 
+      #species ref box
+      ref.data.box =boxes %>%
+        left_join(filter(ref.data,species == spp.names[s]))
+
+      init.data.box = boxes %>%
+        left_join(filter(init.data,species == spp.names[s]))
+
       plot.data.ls = list()
       for(r in 1:length(run.names)){
 
@@ -172,7 +179,7 @@ compare_spatial_vars = function(param.dir,
 
       plot.spp.ls = list()
       #1: Maps of ref values
-      p1 = ggplot2::ggplot(dplyr::filter(plot.data,run.name == run.names[1]),ggplot2::aes(x = long,y = lat, group = polygon, fill = ref.value))+
+      p1 = ggplot2::ggplot(ref.data.box,ggplot2::aes(x= long, y = lat, group = polygon, fill = ref.value))+
         ggplot2::geom_polygon(color = 'black')+
         ggplot2::ggtitle('Reference Value')+
         ggplot2::scale_fill_gradient(low = 'white',high =  'forestgreen',name = paste0('reference\n',data.type))+
@@ -182,7 +189,7 @@ compare_spatial_vars = function(param.dir,
         )
 
       #2: Map of init values
-      p2 = ggplot2::ggplot(dplyr::filter(plot.data,run.name == run.names[1]),ggplot2::aes(x = long,y = lat, group = polygon, fill = init.value))+
+      p2 = ggplot2::ggplot(init.data.box,ggplot2::aes(x = long,y = lat, group = polygon, fill = init.value))+
         ggplot2::geom_polygon(color = 'black')+
         ggplot2::ggtitle('Initial Conditions')+
         ggplot2::scale_fill_gradient(low = 'white',high =  'forestgreen',name = paste0('initial\n',data.type))+
