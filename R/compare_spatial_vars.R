@@ -132,8 +132,11 @@ compare_spatial_vars = function(param.dir,
   if(plot == T){
     #If plotting create PDF with the following plots
 
+    fgs = read.csv(param.ls$groups.file)
     spp.names = sort(unique(run.data.all$species))
+    spp.codes = fgs$Code[match(spp.names,fgs$LongName)]
     box.id = sort(unique(boxes$polygon))
+
 
     #Loop over species with 3+ plots per page (ref, model, comparisons)
 
@@ -222,7 +225,7 @@ compare_spatial_vars = function(param.dir,
         )
 
       plot.layout = matrix(c(1,1,rep(3,length(run.names)+1),2,2,rep(4,length(run.names)+1)),byrow = T,nrow =2)
-      gridExtra::grid.arrange(p1,p2,p3,p4,nrow = 2,layout_matrix = plot.layout,top = paste0(spp.names[s],":",ref.data$var.name[1],' ',data.type))
+      gridExtra::grid.arrange(p1,p2,p3,p4,nrow = 2,layout_matrix = plot.layout,top = paste0(spp.names[s]," (",spp.codes[s],"): ",ref.data$var.name[1],' ',data.type))
 
     }
     dev.off()
