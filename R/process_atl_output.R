@@ -840,6 +840,7 @@ process_atl_output = function(param.dir,
           tidyr::gather('time','atoutput',-polygon)%>%
           dplyr::mutate(fleet = fleet.names[f],
                         species = fgs$LongName[s])%>%
+          dplyr::mutate(time = round(time/365,1))%>%
           dplyr::select(species,fleet,polygon,time,atoutput)
 
       }
