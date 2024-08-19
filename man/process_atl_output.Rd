@@ -32,6 +32,7 @@ process_atl_output(
   plot.spatial.biomass = F,
   plot.spatial.biomass.seasonal = F,
   plot.catch = F,
+  plot.catch.fleet = F,
   plot.spatial.catch = F,
   plot.mortality = F,
   plot.weight = F,
