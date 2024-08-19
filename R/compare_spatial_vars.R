@@ -136,7 +136,8 @@ compare_spatial_vars = function(param.dir,
       if(tolower(ref.data$var.name[1]) %in% c('catch','catch_fleet')){
 
         init.data2 = init.data %>%
-          dplyr::select(species,polygon,init.value)
+          dplyr::select(species,polygon,init.value)%>%
+          dplyr::mutate(polygon = as.factor(polygon))
         run.data.yr = run.data.yr %>%
           dplyr::left_join(ref.data)%>%
           dplyr::left_join(init.data2)%>%
