@@ -796,7 +796,7 @@ process_atl_output = function(param.dir,
     rm(catch,totcatch,catchmt)
   }
 
-  if(plot.catch.fleet|plot.process.all|plot.all){
+  if(plot.catch.fleet|process.all|plot.all){
 
     fisheries = read.csv(param.ls$fishery.prm)
 
