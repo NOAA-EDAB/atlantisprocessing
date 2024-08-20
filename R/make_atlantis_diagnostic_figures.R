@@ -30,9 +30,10 @@
 #'@param plot.diet logical. Plots showing predation of and consumption by each functional group
 #'@param plot.consumption Boolean. Plots showing consumption
 #'@param plot.spatial.biomass logical. Plots showing the spatial (box/level) structure of groups' biomass
+#'@param plot.spatial.catch logical. Plots showing the spatial (box/level) structure of groups' catch
 #'@param plot.spatial.biomass.seasonal logical. Plots showing the spatial (box/level) structure of groups' biomass
 #'@param plot.catch logical. Plots annual catch(mt) age based catch (numbers) and age based %ages
-#'@param plot.max.weight logical. Plots the maximum size of fish in each size class over the domain
+#'@param plot.weight logical. Plots the maximum size of fish in each size class over the domain
 #'@param plot.mortality logical. Plots Mortality (F, M1, M2) from two output sources (Mort, SpecificMort)
 #'
 #'@importFrom magrittr "%>%"
@@ -70,7 +71,8 @@ make_atlantis_diagnostic_figures = function(out.dir,
                                             plot.spatial.biomass,
                                             plot.spatial.biomass.seasonal,
                                             plot.catch,
-                                            plot.max.weight,
+                                            plot.spatial.catch,
+                                            plot.weight,
                                             plot.mortality){
 
 
@@ -119,7 +121,7 @@ make_atlantis_diagnostic_figures = function(out.dir,
   # Catch Timeseries ------------------------------------------------------
 
   if(plot.catch|plot.all) {
-print("Catch")
+    print("Catch")
     catchmt = readRDS(file.path(out.dir,'catchmt.rds'))
 
     #Catch by species time series (metric tonnes)
@@ -155,7 +157,7 @@ print("Catch")
   # Mortality Timeseries ------------------------------------------------------
 
   if(plot.mortality|plot.all) {
-print("mortality")
+    print("mortality")
     # plot mortality from Mort.txt
     mort = readRDS(file.path(out.dir,'mort.rds'))
     itype <- 1
@@ -278,7 +280,7 @@ print("mortality")
 
   #Make biomass timeseries plots
   if(plot.biomass.timeseries|plot.all){
-print("biomass ")
+    print("biomass ")
     biomass = readRDS(file.path(out.dir,'biomass.rds'))
 
     #biomass by species timeseries
@@ -338,7 +340,7 @@ print("biomass ")
 
   #Make length.age plots
   if(plot.length.age|plot.all){
-print("length age")
+    print("length age")
     length.age = readRDS(file.path(out.dir,'length_age.rds'))
 
     #Length at age ts by spp
@@ -381,7 +383,7 @@ print("length age")
   }
 
   # Max weight by age class
-  if(plot.max.weight|plot.all){
+  if(plot.weight|plot.all){
     print("max weight")
     maxSize <- readRDS(file.path(out.dir,'max_weight.rds'))
     ageClasses <- 1:max(maxSize$agecl)
@@ -417,7 +419,7 @@ print("length age")
 
   #Make Biomass Box plots
   if(plot.biomass.box|plot.all){
-print("biomass box")
+    print("biomass box")
     biomass.box = readRDS(file.path(out.dir,'biomass_box.rds'))
     #Bio per box
     temp.plot.1 = atlantistools::plot_line(biomass.box)
@@ -440,137 +442,137 @@ print("biomass box")
     rm(biomass.box,biomass.box.invert)
   }
 
-#   #C_Mum tuning
-#   if(plot.c.mum|plot.all){
-# print("c.num")
-#     #Data processing
-#
-#     #mum by age
-#     mum.age = atlantistools::prm_to_df_ages(param.ls$biol.prm, param.ls$groups.file,group = group.code,parameter = 'mum')
-#     mum.age = tidyr::spread(mum.age,agecl,mum)
-#     mum.age = dplyr::left_join(mum.age,group.index, by = c('species'='LongName'))
-#
-#     #C by age
-#     C.age = atlantistools::prm_to_df_ages(param.ls$biol.prm,param.ls$groups.file,group = group.code,parameter = 'C')
-#     C.age = tidyr::spread(C.age,agecl,c)
-#     C.age = dplyr::left_join(C.age,group.index,by = c('species' = 'LongName'))
-#
-#     #Initial length
-#     init.length = read.csv(file.path(param.dir,'/vertebrate_init_length_cm_Adjusted.csv'),header =T, stringsAsFactors = F)
-#     init.length = init.length[order(init.length$species),]
-#
-#     ## RM "scale mum and C to length at age relative to initial conditions"
-#     length.age = readRDS(file.path(out.dir,'length_age.rds'))
-#     length.age.mn = dplyr::group_by(length.age,species,agecl)
-#     length.age.mn = dplyr::summarise(length.age.mn, avg = mean(atoutput))
-#     length.age.mn = tidyr::spread(length.age.mn,agecl,avg)
-#
-#     #Mean length at age divided by initial length at age
-#     #Used to scale mum and C
-#     match.id = which(!(init.length$species %in% length.age.mn$species))
-#     init.length = init.length[-match.id,]
-#     init.length = init.length %>%
-#       dplyr::select(species,agecl,new.length.ref) %>%
-#       tidyr::spread(agecl,new.length.ref)
-#
-#     length.v.length.init = length.age.mn[,2:ncol(length.age.mn)]/init.length[,2:ncol(init.length)]
-#     row.names(length.v.length.init) =init.length$Code
-#     #Scale mum and C by difference between length at age relative to initial conditions
-#     mum.age = mum.age[-match.id,]
-#     mum.scale = mum.age[,2:11]/length.v.length.init
-#     rownames(mum.scale) = mum.age$Code
-#     mum.scale = mum.scale[order(row.names(mum.scale)),]
-#
-#     C.age = C.age[-match.id,]
-#     C.scale = C.age[,2:11]/length.v.length.init
-#     row.names(C.scale) = C.age$Code
-#     C.scale = C.scale[order(row.names(C.scale)),]
-#
-#     #Write length-scaled C and mum to file
-#     write.csv(mum.scale, file = file.path(fig.dir,paste0(run.name,'newMum_lengthbased.csv')),row.names =T)
-#     write.csv(C.scale,file = file.path(fig.dir,paste0(run.name,'newC_lengthbased.csv')),row.names = T)
-#
-#     ### Also scale mum/C relative to RN vs RN init
-#     RN.age = readRDS(file.path(out.dir,'RN_age.rds'))
-#     RN.mn = dplyr::group_by(RN.age,species,agecl)
-#     RN.mn = dplyr::summarize(RN.mn,avg = mean(atoutput))
-#     RN.mn = tidyr::spread(RN.mn,agecl,avg)
-#
-#     RN.init = dplyr::filter(RN.age,time == 0)
-#     RN.init = tidyr::spread(RN.init,agecl,atoutput)
-#
-#     RN.v.RN.init = round(RN.mn[,2:11]/RN.init[,3:12], digits = 2)
-#     row.names(RN.v.RN.init) = mum.age$Code
-#
-#     #Test to compare
-#     RN.rel = atlantistools::convert_relative_initial(RN.age)
-#     RN.rel = dplyr::group_by(RN.rel,species,agecl)
-#     RN.rel = dplyr::summarise(RN.rel,avg = mean(atoutput))
-#     RN.rel = tidyr::spread(RN.rel,agecl,avg)
-#
-#     #RN based mum scale
-#     mum.scale = mum.age[,2:11]/RN.v.RN.init
-#     row.names(mum.scale) = mum.age$Code
-#     mum.scale = mum.scale[order(row.names(mum.scale)),]
-#
-#     #RN based C scale
-#     C.scale = C.age[,2:11]/RN.v.RN.init
-#     row.names(C.scale) = C.age$Code
-#     C.scale = C.scale[order(row.names(C.scale)),]
-#
-#     #growth scalar
-#     growth.scalar = 1/RN.v.RN.init
-#     growth.scalar = growth.scalar[order(row.names(growth.scalar)),]
-#
-#     #Write RN based mum/C to file
-#     write.csv(growth.scalar, file = file.path(fig.dir,paste0(run.name,'_RNbased_growth_scalar.csv')),row.names = T)
-#     write.csv(mum.scale, file = file.path(fig.dir,paste0(run.name,'_newMum_RNbased.csv')),row.names =T)
-#     write.csv(C.scale,file = file.path(fig.dir,paste0(run.name,'_newC_RNbased.csv')),row.names =T)
-#
-#     #
-#     mum.age = mum.age[order(mum.age$Code),]
-#     C.age = C.age[order(C.age$Code),]
-#     write.csv(mum.age, file = file.path(fig.dir,paste0(run.name,'_Mum_used.csv')),row.names =T)
-#     write.csv(C.age,file = file.path(fig.dir,paste0(run.name,'_C_used.csv')),row.names = T)
-#
-#     #
-#     mum.C = round(mum.age[,2:11]/C.age[,2:11],digits = 2)
-#     row.names(mum.C) = mum.age$Code
-#     mum.C = mum.C[order(row.names(mum.C)),]
-#     write.csv(mum.C, file = file.path(fig.dir,paste0(run.name,'_mum_to_C_ratio.csv')),row.names = T)
-#
-#     #SN check
-#     SN.age = readRDS(file.path(out.dir,'SN_age.rds'))
-#
-#     SN.init = dplyr::filter(SN.age,time ==0 )
-#     SN.init$highMum = SN.init$atoutput*0.1
-#     SN.init$lowMum = SN.init$atoutput*0.5
-#     SN.init$lowC = SN.init$atoutput*0.1
-#     SN.init$highC = SN.init$atoutput*0.06
-#
-#     #transform mum and C wide to long
-#     mum.long = mum.age[,2:12]
-#     mum.long = reshape2::melt(mum.long)
-#     mum.long$variable = as.numeric(mum.long$variable)
-#
-#     C.long = C.age[,2:12]
-#     C.long = reshape2::melt(C.long)
-#     C.long$variable = as.numeric(C.long$variable)
-#
-#     #Combine
-#     SN.test = dplyr::left_join(SN.init, group.index, by = c('species' = 'LongName'))
-#     mum.long = dplyr::left_join(SN.test,mum.long,by = c('Code','agecl' = 'variable'))
-#     SN.mum.C = dplyr::left_join(mum.long,C.long, by = c('Code','agecl' = 'variable'))
-#
-#     SN.mum.C$mum.below.high = SN.mum.C$value.x<(SN.mum.C$highMum*1.05)
-#     SN.mum.C$mum.over.low = SN.mum.C$value.x > (SN.mum.C$lowMum*0.95)
-#     SN.mum.C$C.below.high = SN.mum.C$value.y < (SN.mum.C$highC*1.05)
-#     SN.mum.C$C.over.low = SN.mum.C$value.y > (SN.mum.C$lowC*0.95)
-#
-#     write.csv(SN.mum.C,file = file.path(fig.dir,paste0(run.name,'_SN_sanity_check_on_mum_and_C.csv')),row.names = F)
-#
-#     rm(RN.age,SN.age)
-#   }
+  #   #C_Mum tuning
+  #   if(plot.c.mum|plot.all){
+  # print("c.num")
+  #     #Data processing
+  #
+  #     #mum by age
+  #     mum.age = atlantistools::prm_to_df_ages(param.ls$biol.prm, param.ls$groups.file,group = group.code,parameter = 'mum')
+  #     mum.age = tidyr::spread(mum.age,agecl,mum)
+  #     mum.age = dplyr::left_join(mum.age,group.index, by = c('species'='LongName'))
+  #
+  #     #C by age
+  #     C.age = atlantistools::prm_to_df_ages(param.ls$biol.prm,param.ls$groups.file,group = group.code,parameter = 'C')
+  #     C.age = tidyr::spread(C.age,agecl,c)
+  #     C.age = dplyr::left_join(C.age,group.index,by = c('species' = 'LongName'))
+  #
+  #     #Initial length
+  #     init.length = read.csv(file.path(param.dir,'/vertebrate_init_length_cm_Adjusted.csv'),header =T, stringsAsFactors = F)
+  #     init.length = init.length[order(init.length$species),]
+  #
+  #     ## RM "scale mum and C to length at age relative to initial conditions"
+  #     length.age = readRDS(file.path(out.dir,'length_age.rds'))
+  #     length.age.mn = dplyr::group_by(length.age,species,agecl)
+  #     length.age.mn = dplyr::summarise(length.age.mn, avg = mean(atoutput))
+  #     length.age.mn = tidyr::spread(length.age.mn,agecl,avg)
+  #
+  #     #Mean length at age divided by initial length at age
+  #     #Used to scale mum and C
+  #     match.id = which(!(init.length$species %in% length.age.mn$species))
+  #     init.length = init.length[-match.id,]
+  #     init.length = init.length %>%
+  #       dplyr::select(species,agecl,new.length.ref) %>%
+  #       tidyr::spread(agecl,new.length.ref)
+  #
+  #     length.v.length.init = length.age.mn[,2:ncol(length.age.mn)]/init.length[,2:ncol(init.length)]
+  #     row.names(length.v.length.init) =init.length$Code
+  #     #Scale mum and C by difference between length at age relative to initial conditions
+  #     mum.age = mum.age[-match.id,]
+  #     mum.scale = mum.age[,2:11]/length.v.length.init
+  #     rownames(mum.scale) = mum.age$Code
+  #     mum.scale = mum.scale[order(row.names(mum.scale)),]
+  #
+  #     C.age = C.age[-match.id,]
+  #     C.scale = C.age[,2:11]/length.v.length.init
+  #     row.names(C.scale) = C.age$Code
+  #     C.scale = C.scale[order(row.names(C.scale)),]
+  #
+  #     #Write length-scaled C and mum to file
+  #     write.csv(mum.scale, file = file.path(fig.dir,paste0(run.name,'newMum_lengthbased.csv')),row.names =T)
+  #     write.csv(C.scale,file = file.path(fig.dir,paste0(run.name,'newC_lengthbased.csv')),row.names = T)
+  #
+  #     ### Also scale mum/C relative to RN vs RN init
+  #     RN.age = readRDS(file.path(out.dir,'RN_age.rds'))
+  #     RN.mn = dplyr::group_by(RN.age,species,agecl)
+  #     RN.mn = dplyr::summarize(RN.mn,avg = mean(atoutput))
+  #     RN.mn = tidyr::spread(RN.mn,agecl,avg)
+  #
+  #     RN.init = dplyr::filter(RN.age,time == 0)
+  #     RN.init = tidyr::spread(RN.init,agecl,atoutput)
+  #
+  #     RN.v.RN.init = round(RN.mn[,2:11]/RN.init[,3:12], digits = 2)
+  #     row.names(RN.v.RN.init) = mum.age$Code
+  #
+  #     #Test to compare
+  #     RN.rel = atlantistools::convert_relative_initial(RN.age)
+  #     RN.rel = dplyr::group_by(RN.rel,species,agecl)
+  #     RN.rel = dplyr::summarise(RN.rel,avg = mean(atoutput))
+  #     RN.rel = tidyr::spread(RN.rel,agecl,avg)
+  #
+  #     #RN based mum scale
+  #     mum.scale = mum.age[,2:11]/RN.v.RN.init
+  #     row.names(mum.scale) = mum.age$Code
+  #     mum.scale = mum.scale[order(row.names(mum.scale)),]
+  #
+  #     #RN based C scale
+  #     C.scale = C.age[,2:11]/RN.v.RN.init
+  #     row.names(C.scale) = C.age$Code
+  #     C.scale = C.scale[order(row.names(C.scale)),]
+  #
+  #     #growth scalar
+  #     growth.scalar = 1/RN.v.RN.init
+  #     growth.scalar = growth.scalar[order(row.names(growth.scalar)),]
+  #
+  #     #Write RN based mum/C to file
+  #     write.csv(growth.scalar, file = file.path(fig.dir,paste0(run.name,'_RNbased_growth_scalar.csv')),row.names = T)
+  #     write.csv(mum.scale, file = file.path(fig.dir,paste0(run.name,'_newMum_RNbased.csv')),row.names =T)
+  #     write.csv(C.scale,file = file.path(fig.dir,paste0(run.name,'_newC_RNbased.csv')),row.names =T)
+  #
+  #     #
+  #     mum.age = mum.age[order(mum.age$Code),]
+  #     C.age = C.age[order(C.age$Code),]
+  #     write.csv(mum.age, file = file.path(fig.dir,paste0(run.name,'_Mum_used.csv')),row.names =T)
+  #     write.csv(C.age,file = file.path(fig.dir,paste0(run.name,'_C_used.csv')),row.names = T)
+  #
+  #     #
+  #     mum.C = round(mum.age[,2:11]/C.age[,2:11],digits = 2)
+  #     row.names(mum.C) = mum.age$Code
+  #     mum.C = mum.C[order(row.names(mum.C)),]
+  #     write.csv(mum.C, file = file.path(fig.dir,paste0(run.name,'_mum_to_C_ratio.csv')),row.names = T)
+  #
+  #     #SN check
+  #     SN.age = readRDS(file.path(out.dir,'SN_age.rds'))
+  #
+  #     SN.init = dplyr::filter(SN.age,time ==0 )
+  #     SN.init$highMum = SN.init$atoutput*0.1
+  #     SN.init$lowMum = SN.init$atoutput*0.5
+  #     SN.init$lowC = SN.init$atoutput*0.1
+  #     SN.init$highC = SN.init$atoutput*0.06
+  #
+  #     #transform mum and C wide to long
+  #     mum.long = mum.age[,2:12]
+  #     mum.long = reshape2::melt(mum.long)
+  #     mum.long$variable = as.numeric(mum.long$variable)
+  #
+  #     C.long = C.age[,2:12]
+  #     C.long = reshape2::melt(C.long)
+  #     C.long$variable = as.numeric(C.long$variable)
+  #
+  #     #Combine
+  #     SN.test = dplyr::left_join(SN.init, group.index, by = c('species' = 'LongName'))
+  #     mum.long = dplyr::left_join(SN.test,mum.long,by = c('Code','agecl' = 'variable'))
+  #     SN.mum.C = dplyr::left_join(mum.long,C.long, by = c('Code','agecl' = 'variable'))
+  #
+  #     SN.mum.C$mum.below.high = SN.mum.C$value.x<(SN.mum.C$highMum*1.05)
+  #     SN.mum.C$mum.over.low = SN.mum.C$value.x > (SN.mum.C$lowMum*0.95)
+  #     SN.mum.C$C.below.high = SN.mum.C$value.y < (SN.mum.C$highC*1.05)
+  #     SN.mum.C$C.over.low = SN.mum.C$value.y > (SN.mum.C$lowC*0.95)
+  #
+  #     write.csv(SN.mum.C,file = file.path(fig.dir,paste0(run.name,'_SN_sanity_check_on_mum_and_C.csv')),row.names = F)
+  #
+  #     rm(RN.age,SN.age)
+  #   }
 
 
   # SN/RN plots -------------------------------------------------------------
@@ -645,7 +647,7 @@ print("biomass box")
 
   #Plot recruits
   if(plot.recruits|plot.all){
-print("recruits")
+    print("recruits")
     # Recruits TS
     ssb.recruits = readRDS(file.path(out.dir,'ssb_recruits.rds'))
 
@@ -679,7 +681,7 @@ print("recruits")
 
   #Plot Numbers timeseries
   if(plot.numbers.timeseries|plot.all){
-print("numbers")
+    print("numbers")
     #Numbers TS
     numbers = readRDS(file.path(out.dir,'numbers.rds'))
 
@@ -756,7 +758,7 @@ print("numbers")
 
   #plot physics variables
   if(plot.physics|plot.all){
-print("physics")
+    print("physics")
     #Physics snapshot
     physics.statevars = readRDS(file.path(out.dir,'physics_statevars.rds'))
 
@@ -824,7 +826,7 @@ print("physics")
 
   #plot growth and consumption
   if(plot.growth.cons|plot.all){
-print("growth")
+    print("growth")
     #Growth at ageclass v growth init
     growth.age = readRDS(file.path(out.dir,'growth_age.rds'))
     growth.rel = atlantistools::convert_relative_initial(growth.age)
@@ -868,7 +870,7 @@ print("growth")
 
   #plot cohort timeseries
   if(plot.cohort|plot.all){
-print("cohort")
+    print("cohort")
     numbers.age = readRDS(file.path(out.dir,'numbers_age.rds'))
     pdf(file = file.path(fig.dir, paste0(run.name, ' Cohort Timeseries.pdf')),width = 24, height = 18, onefile =T)
     for(i in 1:10){
@@ -889,7 +891,7 @@ print("cohort")
 
   #Diet figures
   if(plot.diet|plot.all){
-print("diet")
+    print("diet")
     bio_consumed = readRDS(file.path(out.dir,'biomass_consumed.rds'))
     if(nrow(bio_consumed)>0){
 
@@ -897,31 +899,31 @@ print("diet")
       wrap_col = 'agecl'
       combine_thresh = 3
       species = NULL
-print("1")
+      print("1")
       atlantistools::check_df_names(data = bio_consumed, expect = c("pred", "agecl",
-                                                     "time", "prey", "atoutput"), optional = "polygon")
-print("2")
+                                                                    "time", "prey", "atoutput"), optional = "polygon")
+      print("2")
 
       agg_bio <- atlantistools::agg_data(bio_consumed,
                                          groups = c("time", "pred","agecl", "prey"),
                                          fun = sum)
-print("3")
+      print("3")
       preddata <- atlantistools::agg_perc(agg_bio,
                                           groups = c("time", "pred","agecl"))
-print("4")
+      print("4")
       preydata <- atlantistools::agg_perc(agg_bio,
                                           groups = c("time", "prey", "agecl"))
-print("5")
+      print("5")
       pred_comb <- atlantistools::combine_groups(preddata,
                                                  group_col = "prey",
                                                  groups = c("time", "pred", "agecl"),
                                                  combine_thresh = combine_thresh)
-print("6")
+      print("6")
       prey_comb <- atlantistools::combine_groups(preydata,
                                                  group_col = "pred",
                                                  groups = c("time", "prey", "agecl"),
                                                  combine_thresh = combine_thresh)
-print("7")
+      print("7")
 
       if (is.null(species)) {
         species <- sort(union(union(union(preddata$pred, preddata$prey),
@@ -984,7 +986,7 @@ print("7")
 
   #Spatial biomass
   if(plot.spatial.biomass){
-print("spatial biomass")
+    print("spatial biomass")
     biomass.spatial.stanza <-  readRDS(file.path(out.dir,'biomass_spatial_stanza.rds'))
     volume = readRDS(file.path(out.dir,'volume.rds'))
 
@@ -1016,12 +1018,64 @@ print("spatial biomass")
   # This needs to be reworked
   if(F & plot.spatial.biomass.seasonal){
     #source(here::here('R','plot_biomass_box_summary.R'))
-print("spatial biomass")
+    print("spatial biomass seasonal")
     plot_biomass_box_season(bio.box = readRDS(file.path(out.dir,'biomass_box.rds')),
-                           bio.box.invert = readRDS(file.path(out.dir,'biomass_box_invert.rds')),
-                           fig.dir = fig.dir,
-                           species.list = NULL,
-                           plot.presence = T,
-                           save.fig = T)
+                            bio.box.invert = readRDS(file.path(out.dir,'biomass_box_invert.rds')),
+                            fig.dir = fig.dir,
+                            species.list = NULL,
+                            plot.presence = T,
+                            save.fig = T)
+  }
+
+  if(plot.spatial.catch|plot.all){
+    print("spatial catch")
+    bgm = atlantistools::convert_bgm(bgm = param.ls$bgm)
+
+    biomass.box = readRDS(file.path(out.dir,'biomass_box.rds'))%>%
+      dplyr::filter(time >= (max(time)-10))%>%
+      dplyr::group_by(species,polygon)%>%
+      dplyr::summarise(biomass = mean(atoutput,na.rm=T))
+
+    catch = readRDS(file.path(out.dir,'catch.rds')) %>%
+      dplyr::filter(time >= (max(time)-10))%>%
+      dplyr::group_by(species,polygon)%>%
+      dplyr::summarise(catch = mean(atoutput,na.rm=T))
+
+    biomass.catch.box = biomass.box %>%
+      dplyr::left_join(catch)
+
+    i=1
+    pdf(paste0(fig.dir,'/spatial_biomass_catch.pdf'))
+    for(i in 1:nrow(group.index)){
+
+      biomass.catch.spp =biomass.catch.box %>%
+        dplyr::filter(species == group.index$LongName[i])
+
+      biomass.catch.spp.polygon = bgm %>%
+        dplyr::left_join(biomass.catch.spp)
+
+      p1 = ggplot2::ggplot(biomass.catch.spp.polygon, ggplot2::aes(x = long, y = lat, fill = biomass, group = polygon))+
+        ggplot2::geom_polygon(color = 'black',lwd = 0.3)+
+        ggplot2::coord_equal()+
+        ggplot2::scale_fill_viridis_c()+
+        ggplot2::ggtitle('Biomass')+
+        ggplot2::theme_bw()+
+        ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5),
+                       legend.position = 'bottom',
+                       legend.key.width = ggplot2::unit(0.4,'in'))
+      p2 = ggplot2::ggplot(biomass.catch.spp.polygon, ggplot2::aes(x = long, y = lat, fill = catch, group = polygon))+
+        ggplot2::geom_polygon(color = 'black',lwd = 0.3)+
+        ggplot2::coord_equal()+
+        ggplot2::scale_fill_viridis_c()+
+        ggplot2::ggtitle('Catch')+
+        ggplot2::theme_bw()+
+        ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5),
+                       legend.position = 'bottom',
+                       legend.key.width = ggplot2::unit(0.4,'in'))
+
+      gridExtra::grid.arrange(p1,p2, nrow = 1, top = group.index$LongName[i])
+
+    }
+    dev.off()
   }
 }

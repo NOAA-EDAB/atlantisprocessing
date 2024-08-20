@@ -48,11 +48,13 @@ process_atl_output = function(param.dir,
                               plot.spatial.biomass=F,
                               plot.spatial.biomass.seasonal = F,
                               plot.catch =F,
+                              plot.catch.fleet = F,
+                              plot.spatial.catch =F,
                               plot.mortality=F,
-                              plot.max.weight = F,
+                              plot.weight = F,
                               plot.spatial.overlap =F
 
-                              ){
+){
 
   # memory.limit(size = 56000)
   #source(here::here('R','Post_Processing','load_nc_temp.R'))
@@ -85,7 +87,7 @@ process_atl_output = function(param.dir,
   codes.age = atlantistools::get_age_acronyms(param.ls$groups.file)
   groups.data = atlantistools::load_fgs(param.ls$groups.file)
 
-# Read Physics ------------------------------------------------------------
+  # Read Physics ------------------------------------------------------------
 
   #Always make volume objects
   vol.dz = atlantistools::load_nc_physics(nc = param.ls$main.nc, select_physics = c('volume','dz'),
@@ -125,7 +127,7 @@ process_atl_output = function(param.dir,
     gc()
   }
 
-# Other Parameter Objects -------------------------------------------------
+  # Other Parameter Objects -------------------------------------------------
   #Read in age matrix
   data.age.mat = atlantistools::prm_to_df(prm_biol = param.ls$biol.prm, fgs = param.ls$groups.file,
                                           group = codes.age, parameter = 'age_mat')
@@ -176,7 +178,7 @@ process_atl_output = function(param.dir,
 
   growth.required = dplyr::select(pd, c(species,agecl, growth_req))
 
-# Process DietCheck -------------------------------------------------------
+  # Process DietCheck -------------------------------------------------------
 
   if(plot.diet|plot.all|process.all){
     if(large.file==F){
@@ -291,16 +293,16 @@ process_atl_output = function(param.dir,
   }
 
 
-# Main NetCDF objects -----------------------------------------------------
+  # Main NetCDF objects -----------------------------------------------------
 
   #Set up biological variable groups
   group.types = dplyr::bind_rows(list(data.frame(species = groups.age,group = 'age'),
-       data.frame(species = groups.bp, group = 'bp'))
+                                      data.frame(species = groups.bp, group = 'bp'))
   )
   age.vars= c('Nums','StructN','ResN','N')
   bp.vars = 'N'
 
-  if(plot.overall.biomass|plot.biomass.timeseries|plot.biomass.box|plot.max.weight|plot.benthic|plot.spatial.biomass|plot.spatial.biomass.seasonal|plot.sn.rn|plot.length.age|plot.numbers.timeseries|plot.cohort|plot.spatial.overlap|plot.c.mum|plot.all|process.all){
+  if(plot.overall.biomass|plot.biomass.timeseries|plot.biomass.box|plot.weight|plot.benthic|plot.spatial.biomass|plot.spatial.biomass.seasonal|plot.sn.rn|plot.length.age|plot.numbers.timeseries|plot.cohort|plot.spatial.overlap|plot.c.mum|plot.spatial.catch|plot.all|process.all){
 
     numbers = list()
     numbers.age = list()
@@ -334,7 +336,8 @@ process_atl_output = function(param.dir,
                                          fgs = param.ls$groups.file,prm_run = param.ls$run.prm,
                                          bboxes = bboxes ))
 
-      if(plot.overall.biomass|plot.biomass.timeseries|plot.biomass.box|plot.max.weight|plot.benthic|plot.spatial.biomass|plot.spatial.biomass.seasonal|process.all|plot.all){
+
+      if(plot.overall.biomass|plot.biomass.timeseries|plot.biomass.box|plot.weight|plot.benthic|plot.spatial.biomass|plot.spatial.biomass.seasonal|plot.spatial.catch|process.all|plot.all){
 
         spatial.biomass = atlantistools::calculate_biomass_spatial(nums = rawdata.main[[1]],
                                                                    sn = rawdata.main[[2]],
@@ -375,7 +378,7 @@ process_atl_output = function(param.dir,
         }
 
         #Biomass Box objects
-        if(plot.biomass.box|plot.spatial.biomass.seasonal|process.all|plot.all){
+        if(plot.biomass.box|plot.spatial.catch|plot.spatial.biomass|plot.spatial.biomass.seasonal|process.all|plot.all){
 
           biomass.box = atlantistools::agg_data(spatial.biomass, groups = c('species','polygon','time'), fun = sum)
           bind.save(biomass.box,'biomass_box',out.dir)
@@ -400,7 +403,7 @@ process_atl_output = function(param.dir,
 
       }
 
-      if(plot.max.weight|plot.all|process.all){
+      if(plot.weight|plot.all|process.all){
 
         spatialNumbers = rawdata.main[[1]] %>%
           dplyr::rename(numbers = atoutput)
@@ -484,7 +487,7 @@ process_atl_output = function(param.dir,
 
     #large file size accomodations: Pre-aggregate and then run normal routine
 
-   if(large.file == T){
+    if(large.file == T){
 
       for(i in 1:nrow(group.types)){
 
@@ -607,7 +610,7 @@ process_atl_output = function(param.dir,
     }
   }
 
-# PROD netCDF objectsspatialBiomass# PROD netCDF objects -----------------------------------------------------
+  # PROD netCDF objectsspatialBiomass# PROD netCDF objects -----------------------------------------------------
 
 
   if(plot.growth.cons|plot.diet|process.all|plot.all){
@@ -763,7 +766,7 @@ process_atl_output = function(param.dir,
 
   }
 
-# Do Recruitment ----------------------------------------------------------
+  # Do Recruitment ----------------------------------------------------------
 
   if(plot.recruits|process.all|plot.all){
     ssb.recruits = atlantistools::load_rec(yoy = param.ls$yoy, ssb = param.ls$ssb,prm_biol = param.ls$biol.prm )
@@ -771,9 +774,9 @@ process_atl_output = function(param.dir,
     rm(ssb.recruits)
   }
 
-# Do catch -------------------------------------------------------------------
+  # Do catch -------------------------------------------------------------------
 
-  if(plot.catch|process.all|plot.all){
+  if(plot.catch|plot.spatial.catch|process.all|plot.all){
     catch = atlantistools::load_nc(param.ls$catch,
                                    fgs = param.ls$groups.file,
                                    bps = bio.pools,
@@ -786,11 +789,71 @@ process_atl_output = function(param.dir,
       dplyr::select(species,time,atoutput) %>%
       dplyr::mutate(time = time/365)
 
-    # saveRDS(catch,file.path(out.dir,'catch.rds'))
+    saveRDS(catch,file.path(out.dir,'catch.rds'))
     saveRDS(totcatch,file.path(out.dir,'totcatch.rds'))
     saveRDS(catchmt,file.path(out.dir,'catchmt.rds'))
 
     rm(catch,totcatch,catchmt)
+  }
+
+  if(plot.catch.fleet|process.all|plot.all){
+
+    fisheries = read.csv(param.ls$fishery.prm)
+
+    catch.nc =ncdf4::nc_open(param.ls$catch)
+
+    catch.varname = names(catch.nc$var)
+
+    times = catch.nc$dim$t$vals/86400
+
+    get_fleet_num = function(x){
+      a = strsplit(x,'_')[[1]][3]
+      b = strsplit(a,'FC')[[1]][2]
+      return(as.numeric(b)-1)
+    }
+
+    spp.catch.out.ls = list()
+    s=1
+    for(s in 1:nrow(fgs)){
+
+      spp.vars = grep(paste0('^',fgs$Code[s]),catch.varname,value =T)
+
+      if(length(spp.vars) == 0){next()}
+
+      spp.catch.vars = grep('Catch',spp.vars,value =T)
+
+      if(length(spp.catch.vars) == 0){next()}
+
+      #get the fleet ID
+      fleet.nums = sapply(spp.catch.vars,get_fleet_num,USE.NAMES = F)
+      fleet.names = fisheries$Code[match(fleet.nums,fisheries$Index)]
+
+      fleet.out.ls = list()
+      f=1
+      for(f in 1:length(spp.catch.vars)){
+
+        data.fleet = ncdf4::ncvar_get(catch.nc,spp.catch.vars[f])%>%
+          as.data.frame()
+
+        colnames(data.fleet) = times
+        fleet.out.ls[[f]] = dplyr::bind_cols(data.frame(polygon = (1:nrow(data.fleet))-1), data.fleet)%>%
+          tidyr::gather('time','atoutput',-polygon)%>%
+          dplyr::mutate(fleet = fleet.names[f],
+                        species = fgs$LongName[s])%>%
+          dplyr::mutate(time = round(as.numeric(time)/365,1))%>%
+          dplyr::select(species,fleet,polygon,time,atoutput)
+
+      }
+
+      spp.catch.out.ls[[s]] = dplyr::bind_rows(fleet.out.ls)
+
+    }
+
+    catch.fleet = dplyr::bind_rows(spp.catch.out.ls)
+
+    saveRDS(catch.fleet,file.path(out.dir,'catch_fleet.rds'))
+
+    ncdf4::nc_close(catch.nc)
   }
 
   # Do mortality -------------------------------------------------------------------

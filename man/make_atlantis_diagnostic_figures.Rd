@@ -32,7 +32,8 @@ make_atlantis_diagnostic_figures(
   plot.spatial.biomass,
   plot.spatial.biomass.seasonal,
   plot.catch,
-  plot.max.weight,
+  plot.spatial.catch,
+  plot.weight,
   plot.mortality
 )
 }
@@ -91,7 +92,9 @@ make_atlantis_diagnostic_figures(
 
 \item{plot.catch}{logical. Plots annual catch(mt) age based catch (numbers) and age based \%ages}
 
-\item{plot.max.weight}{logical. Plots the maximum size of fish in each size class over the domain}
+\item{plot.spatial.catch}{logical. Plots showing the spatial (box/level) structure of groups' catch}
+
+\item{plot.weight}{logical. Plots the maximum size of fish in each size class over the domain}
 
 \item{plot.mortality}{logical. Plots Mortality (F, M1, M2) from two output sources (Mort, SpecificMort)}
 }

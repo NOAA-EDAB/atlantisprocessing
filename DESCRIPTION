@@ -11,7 +11,7 @@ Authors@R:
       person(given = "Ryan",family = "Morse", role = c("aut"),
            email = "ryan.morse@noaa.gov",
            comment = c(ORCID = "YOUR-ORCID-ID")))
-Description: Reads in Atlantis output files (nc, txt) and processes content to create RDS files used for plotting to aid in calibrating.
+Description: Reads in Atlantis output files (nc, txt) and processes content
 License: file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
@@ -19,6 +19,7 @@ RoxygenNote: 7.3.1
 Imports: 
     atlantisom,
     atlantistools,
+    rbgm,
     data.table,
     dplyr,
     ggplot2,
@@ -38,3 +39,4 @@ Imports:
 Remotes:
    Atlantis-Ecosystem-Model/atlantistools,
    r4atlantis/atlantisom
+   
