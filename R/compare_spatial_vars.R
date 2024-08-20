@@ -115,8 +115,8 @@ compare_spatial_vars = function(param.dir,
           dplyr::summarise(atoutput = mean(atoutput,na.rm=T))%>%
           dplyr::group_by(species,fleet)%>%
           dplyr::mutate(model.total = sum(atoutput))%>%
-          dplyr::ungroup()%>%
-          print(n = 60)
+          dplyr::ungroup()
+
       }
 
       run.data.yr$polygon = as.factor(run.data.yr$polygon)

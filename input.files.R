@@ -1,9 +1,11 @@
 library(dplyr)
 i = 1
-param.dir = 'C:/Users/joseph.caracappa/Documents/GitHub/neus-atlantis/currentVersion'
+# param.dir = 'C:/Users/joseph.caracappa/Documents/GitHub/neus-atlantis/currentVersion'
+param.dir = 'Z:/Joe_Proj/currentVersion/'
 # run.dirs = c('C:/Users/joseph.caracappa/Documents/GitHub/neus-atlantis/Atlantis_Runs/gfimposezerotsfullsweptarea2',
 #             'C:/Users/joseph.caracappa/Documents/GitHub/neus-atlantis/Atlantis_Runs/HER_TS_dist_ddepend3')
-run.dirs = 'C:/Users/joseph.caracappa/Documents/GitHub/neus-atlantis/Atlantis_Runs/fleets_example'
+# run.dirs = 'C:/Users/joseph.caracappa/Documents/GitHub/neus-atlantis/Atlantis_Runs/fleets_example'
+run.dirs = 'Z:/Joe_Proj/Atlantis_Runs/fleets_example'
 # run.names = c('HER_TS_dist_ddepend0','HER_TS_dist_ddepend3')
 run.names = 'fleets_example'
 out.name = 'catch_test'
