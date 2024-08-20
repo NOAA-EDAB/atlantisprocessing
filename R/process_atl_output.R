@@ -10,6 +10,7 @@
 #' @param system String. "Windows" or "Linux"
 #' @param process.all Boolean. Global option to process all components
 #' @param plot.spatial.overlap Boolean
+#' @param plot.catch.fleet Boolean
 #'
 #' @inheritParams make_atlantis_diagnostic_figures
 #'

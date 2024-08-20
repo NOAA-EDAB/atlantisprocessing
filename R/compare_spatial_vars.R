@@ -13,7 +13,6 @@
 #' @param ref.years numeric vector with first and last year (years from start) for comparison period
 #' @param plot logical. do you want to generate a plot
 #'
-#' @inheritParams make_atlantis_diagnostic_figures
 #'
 #' @importFrom magrittr "%>%"
 #'
@@ -195,10 +194,10 @@ compare_spatial_vars = function(param.dir,
 
         #species ref box
         ref.data.box =boxes %>%
-          left_join(filter(ref.data,species == spp.names[s]))
+          dplyr::left_join(filter(ref.data,species == spp.names[s]))
 
         init.data.box = boxes %>%
-          left_join(filter(init.data,species == spp.names[s]))
+          dplyr::left_join(filter(init.data,species == spp.names[s]))
 
         plot.data.ls = list()
         for(r in 1:length(run.names)){
@@ -223,7 +222,7 @@ compare_spatial_vars = function(param.dir,
             dplyr::mutate(polygon = as.factor(polygon))
 
           plot.data.ls[[r]] = boxes %>%
-            left_join(plot.data.spp, by = 'polygon')
+            dplyr::left_join(plot.data.spp, by = 'polygon')
 
         }
         plot.data = dplyr::bind_rows(plot.data.ls)
@@ -294,10 +293,10 @@ compare_spatial_vars = function(param.dir,
 
         #species ref box
         ref.data.box =boxes %>%
-          left_join(filter(ref.data,species == fleet.combs$species[sf] & fleet == fleet.combs$fleet[sf]))
+          dplyr::left_join(filter(ref.data,species == fleet.combs$species[sf] & fleet == fleet.combs$fleet[sf]))
 
         init.data.box = boxes %>%
-          left_join(filter(init.data,species == fleet.combs$species[sf]))
+          dplyr::left_join(filter(init.data,species == fleet.combs$species[sf]))
 
         plot.data.ls = list()
         for(r in 1:length(run.names)){
@@ -329,7 +328,7 @@ compare_spatial_vars = function(param.dir,
           }
 
           plot.data.ls[[r]] = boxes %>%
-            left_join(plot.data.spp, by = 'polygon')
+            dplyr::left_join(plot.data.spp, by = 'polygon')
 
         }
         plot.data = dplyr::bind_rows(plot.data.ls)
