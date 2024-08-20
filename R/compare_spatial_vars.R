@@ -13,7 +13,6 @@
 #' @param ref.years numeric vector with first and last year (years from start) for comparison period
 #' @param plot logical. do you want to generate a plot
 #'
-#' @inheritParams make_atlantis_diagnostic_figures
 #'
 #' @importFrom magrittr "%>%"
 #'
