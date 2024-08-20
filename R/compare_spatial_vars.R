@@ -194,10 +194,10 @@ compare_spatial_vars = function(param.dir,
 
         #species ref box
         ref.data.box =boxes %>%
-          dplyr::left_join(filter(ref.data,species == spp.names[s]))
+          dplyr::left_join(dplyr::filter(ref.data,species == spp.names[s]))
 
         init.data.box = boxes %>%
-          dplyr::left_join(filter(init.data,species == spp.names[s]))
+          dplyr::left_join(dplyr::filter(init.data,species == spp.names[s]))
 
         plot.data.ls = list()
         for(r in 1:length(run.names)){
@@ -293,10 +293,10 @@ compare_spatial_vars = function(param.dir,
 
         #species ref box
         ref.data.box =boxes %>%
-          dplyr::left_join(filter(ref.data,species == fleet.combs$species[sf] & fleet == fleet.combs$fleet[sf]))
+          dplyr::left_join(dplyr::filter(ref.data,species == fleet.combs$species[sf] & fleet == fleet.combs$fleet[sf]))
 
         init.data.box = boxes %>%
-          dplyr::left_join(filter(init.data,species == fleet.combs$species[sf]))
+          dplyr::left_join(dplyr::filter(init.data,species == fleet.combs$species[sf]))
 
         plot.data.ls = list()
         for(r in 1:length(run.names)){
