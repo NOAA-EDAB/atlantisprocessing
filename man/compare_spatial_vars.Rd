@@ -16,6 +16,7 @@ compare_spatial_vars(
   data.type = "proportion",
   comparison.type = "difference",
   ref.years,
+  speciesCodes = NULL,
   plot = T
 )
 }
@@ -41,6 +42,8 @@ compare_spatial_vars(
 \item{comparison.type}{which type of comparison should be made: 'difference','scalar'}
 
 \item{ref.years}{numeric vector with first and last year (years from start) for comparison period}
+
+\item{speciesCodes}{character vector. List of species to make plots for. Defaul = NULL (All species)}
 
 \item{plot}{logical. do you want to generate a plot}
 }

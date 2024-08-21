@@ -11,6 +11,7 @@
 #' @param data.type which type of data is being compared: 'proportion','value'
 #' @param comparison.type which type of comparison should be made: 'difference','scalar'
 #' @param ref.years numeric vector with first and last year (years from start) for comparison period
+#' @param speciesCodes character vector. List of species to make plots for. Defaul = NULL (All species)
 #' @param plot logical. do you want to generate a plot
 #'
 #'
@@ -34,6 +35,7 @@ compare_spatial_vars = function(param.dir,
                                 data.type = 'proportion',
                                 comparison.type = 'difference',
                                 ref.years,
+                                speciesCodes=NULL,
                                 plot = T){
   #Pull in reference data
 
@@ -184,6 +186,14 @@ compare_spatial_vars = function(param.dir,
     spp.codes = fgs$Code[match(spp.names,fgs$LongName)]
     box.id = sort(unique(boxes$polygon))
 
+    # filter species of interest
+    if(!is.null(speciesCodes)) {
+      nms <- data.frame(names=spp.names,codes = spp.codes)
+      nms <- nms |>
+        dplyr::filter(codes %in% speciesCodes)
+      spp.names <- nms$names
+      spp.codes <- nms$codes
+    }
 
     #Loop over species with 3+ plots per page (ref, model, comparisons)
     if(tolower(ref.data$var.name[1]) %in% c('catch','biomass','numbers')){
@@ -194,10 +204,10 @@ compare_spatial_vars = function(param.dir,
 
         #species ref box
         ref.data.box =boxes %>%
-          dplyr::left_join(filter(ref.data,species == spp.names[s]))
+          dplyr::left_join(dplyr::filter(ref.data,species == spp.names[s]))
 
         init.data.box = boxes %>%
-          dplyr::left_join(filter(init.data,species == spp.names[s]))
+          dplyr::left_join(dplyr::filter(init.data,species == spp.names[s]))
 
         plot.data.ls = list()
         for(r in 1:length(run.names)){
@@ -286,6 +296,14 @@ compare_spatial_vars = function(param.dir,
       fleet.combs = run.data.all%>%
         dplyr::distinct(species,fleet)
 
+      if(!is.null(speciesCodes)) {
+        fleet.combs <- fleet.combs |>
+          dplyr::left_join(nms, by = c("species"="names")) |>
+          dplyr::filter(codes %in% speciesCodes) |>
+          dplyr::select(species,fleet) |>
+          dplyr::arrange(species,fleet)
+      }
+
       pdf(paste0(out.dir,out.name,'.pdf'), width =6+(3*length(run.names)), height =10)
       for(sf in 1:nrow(fleet.combs)){
 
@@ -293,10 +311,10 @@ compare_spatial_vars = function(param.dir,
 
         #species ref box
         ref.data.box =boxes %>%
-          dplyr::left_join(filter(ref.data,species == fleet.combs$species[sf] & fleet == fleet.combs$fleet[sf]))
+          dplyr::left_join(dplyr::filter(ref.data,species == fleet.combs$species[sf] & fleet == fleet.combs$fleet[sf]))
 
         init.data.box = boxes %>%
-          dplyr::left_join(filter(init.data,species == fleet.combs$species[sf]))
+          dplyr::left_join(dplyr::filter(init.data,species == fleet.combs$species[sf]))
 
         plot.data.ls = list()
         for(r in 1:length(run.names)){
