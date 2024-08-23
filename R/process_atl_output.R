@@ -817,7 +817,7 @@ process_atl_output = function(param.dir,
     s=1
     for(s in 1:nrow(fgs)){
 
-      spp.vars = grep(paste0('^',fgs$Code[s]),catch.varname,value =T)
+      spp.vars = grep(paste0('^',fgs$Code[s],'_'),catch.varname,value =T)
 
       if(length(spp.vars) == 0){next()}
 
