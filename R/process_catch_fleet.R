@@ -15,7 +15,7 @@
 process_catch_fleet = function(fishery.prm, catch, groups.file){
 
   fisheries = read.csv(fishery.prm)
-  fgs = read.csv(fgs.file)
+  fgs = read.csv(groups.file)
 
   catch.nc =ncdf4::nc_open(catch)
 
