@@ -1,12 +1,20 @@
-#' Creates post-processing output for Atlantis
+#' Creates post-processing Catch output for Atlantis
+#'
+#' Reads in catch output from catch.nc file by species, fleet, box, time
 #'
 #' @param fishery.prm string. Path to location of atlantis fishery csv file
-#' @param catch string. path to location of atlantis catch output file
+#' @param catch string. path to location of atlantis catch output nc file
 #' @param groups.file string. path to location of atlantis functional groups csv file
 #'
 #' @importFrom magrittr "%>%"
 #'
 #' @return returns a dataframe
+#'
+#' \item{species}{long species name}
+#' \item{fleet}{fleet name}
+#' \item{polygon}{atlantis box/polygon number}
+#' \item{time}{time step}
+#' \item{atoutput}{metric tons}
 #'
 #' Author: Joseph Caracappa
 #'
