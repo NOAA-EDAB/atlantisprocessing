@@ -1,26 +1,26 @@
 library(dplyr)
 i = 1
-# param.dir = 'C:/Users/joseph.caracappa/Documents/GitHub/neus-atlantis/currentVersion'
-param.dir = 'Z:/Joe_Proj/currentVersion/'
+param.dir = 'C:/Users/joseph.caracappa/Documents/GitHub/neus-atlantis/currentVersion'
+# param.dir = 'Z:/Joe_Proj/currentVersion/'
+
 # run.dirs = c('C:/Users/joseph.caracappa/Documents/GitHub/neus-atlantis/Atlantis_Runs/gfimposezerotsfullsweptarea2',
 #             'C:/Users/joseph.caracappa/Documents/GitHub/neus-atlantis/Atlantis_Runs/HER_TS_dist_ddepend3')
-# run.dirs = 'C:/Users/joseph.caracappa/Documents/GitHub/neus-atlantis/Atlantis_Runs/fleets_example'
-run.dirs = 'Z:/Joe_Proj/Atlantis_Runs/fleets_example'
+run.dir = 'C:/Users/joseph.caracappa/Documents/GitHub/neus-atlantis/Atlantis_Runs/devplusfleets'
 # run.names = c('HER_TS_dist_ddepend0','HER_TS_dist_ddepend3')
-run.names = 'fleets_example'
-out.name = 'catch_test'
+run.name = 'devplusfleets'
+out.name = 'length_dist'
 run.prefix = 'neus_output'
 out.dir = 'C:/Users/joseph.caracappa/Documents/'
 # out.dir = paste0(run.dirs,'/Post_Processed/Data/')
 param.ls= get_atl_paramfiles(param.dir = param.dir,
-                             atl.dir=run.dirs[1],
+                             atl.dir=run.dir,
                              run.prefix = run.prefix,
                              include_catch=T)
 fgs = read.csv(param.ls$groups.file)
 data.type = 'proportion'
 comparison.type = 'difference'
 
-ref.years = c(10,20)
+ref.years = c(30,40)
 
 # ref.val.ls = list()
 # for(i in 1:nrow(fgs)){
@@ -62,3 +62,6 @@ compare_spatial_vars(param.dir = 'C:/Users/joseph.caracappa/Documents/GitHub/neu
                                 comparison.type = 'difference',
                                 ref.years = c(45,55),
                                 plot = T)
+
+catch.ref = readRDS('C:/Users/joseph.caracappa/Documents/GitHub/neus-atlantis/data/groundfish_catch_length_reference.RDS')
+survey.ref = readRDS('C:/Users/joseph.caracappa/Documents/GitHub/neus-atlantis/data/survdat_length_reference.RDS')
