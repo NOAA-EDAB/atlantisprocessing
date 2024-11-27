@@ -32,6 +32,8 @@ plot_length_freq(
 
 \item{ref.years}{numeric vector with first and last year (years from start) for comparison period}
 
+\item{bin.width}{numeric. Width of bins (in cms) in which to bin Fish length. Default = 1}
+
 \item{out.dir}{string. path to desired location of post-processed output}
 
 \item{out.name}{string. name for output file prefix}

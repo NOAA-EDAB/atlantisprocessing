@@ -6,6 +6,7 @@
 #' @param catch.ref dataframe  that contains reference catch data with format (Code|len.lower|len.upper|cum.prob)
 #' @param survey.ref dataframe that contains reference biomass data  with format (Code|len.lower|len.upper|cum.prob)
 #' @param ref.years numeric vector with first and last year (years from start) for comparison period
+#' @param bin.width numeric. Width of bins (in cms) in which to bin Fish length. Default = 1
 #' @param out.dir string. path to desired location of post-processed output
 #' @param out.name string. name for output file prefix
 #' @param param.ls list generated from get_atl_paramfiles()
@@ -22,7 +23,18 @@
 #' @export
 #'
 
-plot_length_freq = function(param.dir, run.dir, run.name, catch.ref, survey.ref,ref.years,bin.width = 1, out.dir,out.name, param.ls,speciesCodes = NULL, fleetCodes = NULL){
+plot_length_freq = function(param.dir,
+                            run.dir,
+                            run.name,
+                            catch.ref,
+                            survey.ref,
+                            ref.years,
+                            bin.width = 1,
+                            out.dir,
+                            out.name,
+                            param.ls,
+                            speciesCodes = NULL,
+                            fleetCodes = NULL){
 
   fgs.orig = read.csv(param.ls$groups.file)
   fgs.fished = fgs.orig %>%
