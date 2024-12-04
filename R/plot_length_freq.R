@@ -170,7 +170,7 @@ plot_length_freq = function(param.dir,
       spp.len.age.bin =ceiling(spp.len.age/bin.width)*bin.width
       # spp.len.age.fact = array(as.numeric(factor(spp.len.age.bin)),dim = dim(spp.len.age))
 
-      spp.len.bin.df = data.frame(Code = fgs.orig$Code[s],agecl = a,bin.width = bin.width, len.lower = len.bins, len.upper = len.bins + bin.width,catch.n = NA, bio.n = NA)
+      spp.len.bin.df = data.frame(Code = fgs.fished$Code[s],agecl = a,bin.width = bin.width, len.lower = len.bins, len.upper = len.bins + bin.width,catch.n = NA, bio.n = NA)
 
       for(l in 1:length(len.bins)){
         spp.len.age.mean.l = spp.len.age.mean.bin/len.bins[l]
