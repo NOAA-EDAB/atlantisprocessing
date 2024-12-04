@@ -5,6 +5,7 @@
 
 # current r proj
 *.Rproj
+*.R
 # folders
 other
 docs
