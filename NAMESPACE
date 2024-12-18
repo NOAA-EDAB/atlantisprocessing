@@ -3,6 +3,7 @@
 export(compare_spatial_vars)
 export(get_atl_paramfiles)
 export(make_atlantis_diagnostic_figures)
+export(plot_length_freq)
 export(process_atl_output)
 export(process_catch_fleet)
 importFrom(magrittr,"%>%")
